@@ -3,13 +3,11 @@
 {% block body %}
   <table>
     <tr>
-      <th>Resepti</th>
-      <th>Ohje</th>
+      <th>Recipe name</th>
     </tr>
     {% for recipe in recipes %}
     <tr>
-      <td>{{ recipe.name }}</td>
-      <td>{{ recipe.instruction }}</td>
+      <td><a href="{{ url_for('recipe_info', recipe_id=recipe.id)}}">{{recipe.name}}</a></td>
     </tr>
     {% endfor %}
   </table>

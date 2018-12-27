@@ -2,8 +2,14 @@
   
 {% block body %}
 <form method="POST" action="{{ url_for('recipes_create') }}">
+  Name:
+  <br>
   <input type="text" name="name"/>
-  <input type="text" name="instruction"/>
+  <br>
+  Instruction:
+  <br>
+  <textarea rows="4" cols="50" name="instruction"/></textarea>
+  <br>
   <input type="submit" value="Add a new recipe"/>
 </form>
 {% endblock %}
