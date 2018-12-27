@@ -1,8 +1,0 @@
-As a/an | I want to... | so that...
-
-As a user, I want to be able to edit my recipe instructions, so that I can correct any typos I did in the first place.
-As a user, I want to be able to edit my recipe ingredients, so that I can adjust the amounts after coming up with better ones.
-As a poor cook, I want to get detailed ingredient information and cooking instructions, so that I can try new recipes with confidence.
-As an innovative foodmaker, I want to store the recipes I try out, so that I can later revisit the ones that I liked.
-As a food industry trail-blazer, I want to share my new recipes, so that I can influence my audiences cooking habits.
-As a busy person, I want to be able to find new meals that I can make in a short period of time, so that I won't have to resort to frozen pizza as often.
