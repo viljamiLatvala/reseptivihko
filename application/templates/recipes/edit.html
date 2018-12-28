@@ -1,15 +1,42 @@
 {% extends "layout.html" %}
-  
 {% block body %}
-<form method="POST" action="{{ url_for('recipe_edit', recipe_id=recipe.id) }}">
-  Name:
-  <br>
-  <input type="text" name="name" value="{{ recipe.name }}"/>
-  <br>
-  Instruction:
-  <br>
-  <textarea rows="4" cols="50" name="instruction"/>{{ recipe.instruction }}</textarea>
-  <br>
-  <input type="submit" value="Update"/>
-</form>
+  <form method="POST" action="{{ url_for('recipe_edit', recipe_id=recipe.id) }}">
+    <table>
+      <tr>
+        <td>
+          {{form.name.label}}
+        </td>
+        <td>
+          {{form.name(value=recipe.name)}}
+        </td>
+        <td>
+          {% for error in form.name.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          {{form.instruction.label}}
+        </td>
+        <td>
+          {% set formValue = form.instruction.process_data(recipe.instruction) %}
+          {{form.instruction}}
+        </td>
+        <td>
+          {% for error in form.instruction.errors %}
+            <li>{{ error }}</li>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <input type="submit" value="Update"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+  <form method="POST" action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}">
+    <input type="submit" value="Delete"/>
+  </form>
 {% endblock %}

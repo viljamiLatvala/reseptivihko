@@ -119,3 +119,7 @@ dmypy.json
 
 #database
 recipes.db
+
+#extra documentation
+user_stories.txt
+database_diagram.txt
