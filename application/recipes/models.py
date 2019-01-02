@@ -7,7 +7,7 @@ class Recipe(db.Model):
     onupdate=db.func.current_timestamp())
 
     name = db.Column(db.String(144), nullable=False)
-    instruction = db.Column(db.String(144), nullable=False)
+    instruction = db.Column(db.String(6000), nullable=False)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
 
