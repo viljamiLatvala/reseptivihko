@@ -2,6 +2,7 @@
   
 {% block body %}
 <h1>{{ recipe.name }}</h1>
+<p>by: {{ recipe.account_id }}</p>
 <p>{{ recipe.instruction }}</p>
 <a href="{{ url_for('recipe_editform', recipe_id=recipe.id)}}">Edit</a>
 {% endblock %}
