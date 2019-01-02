@@ -2,7 +2,9 @@
   
 {% block body %}
 <h1>{{ recipe.name }}</h1>
-<p>by: {{ recipe.account_id }}</p>
+<p>by: {{ recipeCreator.username }}</p>
 <p>{{ recipe.instruction }}</p>
+{% if current_user.get_id() == recipe.account_id %}
 <a href="{{ url_for('recipe_editform', recipe_id=recipe.id)}}">Edit</a>
+{% endif %}
 {% endblock %}

@@ -1,6 +1,7 @@
 from application import app, db
-from flask import redirect,render_template, request, url_for
+from flask import redirect,render_template, request, url_for, abort
 from application.recipes.models import Recipe
+from application.auth.models import User
 from application.recipes.forms import RecipeForm, RecipeEditForm
 from flask_login import login_required, current_user
 
@@ -15,7 +16,9 @@ def recipes_form():
 
 @app.route("/recipes/<recipe_id>/", methods=["GET"])
 def recipe_info(recipe_id):
-    return render_template("recipes/recipe.html", recipe = Recipe.query.get(recipe_id))
+    recipe = Recipe.query.get(recipe_id)
+    recipeCreator = User.query.filter_by(id=recipe.account_id).first();
+    return render_template("recipes/recipe.html", recipe = recipe, recipeCreator = recipeCreator)
 
 @app.route("/recipes/<recipe_id>/edit/", methods=["GET"])
 @login_required
@@ -26,6 +29,8 @@ def recipe_editform(recipe_id):
 @login_required
 def recipe_delete(recipe_id):
     recipe = Recipe.query.get(recipe_id)
+    if recipe.account_id is not current_user.get_id():
+        return abort(401)
     db.session.delete(recipe)
     db.session.commit()
     return redirect(url_for("recipes_index"))
@@ -33,6 +38,10 @@ def recipe_delete(recipe_id):
 @app.route("/recipes/<recipe_id>/", methods=["POST"])
 @login_required
 def recipe_edit(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if recipe.account_id is not current_user.get_id():
+        return abort(401)
+
     form = RecipeEditForm(request.form)
 
     if not form.validate():
