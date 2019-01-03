@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block body %}
+  <table>
+    <tr>
+      <th>Tag</th>
+    </tr>
+    {% for tag in tags %}
+    <tr>
+      <td><a href="{{ url_for('tag_info', tag_id=tag.id)}}">{{tag.name}}</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

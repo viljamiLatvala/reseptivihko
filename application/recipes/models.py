@@ -1,17 +1,26 @@
 from application import db
+from application.models import Base
 
-class Recipe(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
-    date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
-    date_modified = db.Column(db.DateTime, default=db.func.current_timestamp(),
-    onupdate=db.func.current_timestamp())
+tags = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
+    db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)
+)
 
+class Recipe(Base):
     name = db.Column(db.String(144), nullable=False)
     instruction = db.Column(db.String(6000), nullable=False)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
+    tags = db.relationship('Tag', secondary=tags, lazy='subquery',
+        backref=db.backref('recipes', lazy=True))
 
     def __init__(self, name, instruction = 'empty'):
         self.name = name
         self.instruction = instruction
         
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(144), nullable=False)
+
+    def __init__(self, name):
+        self.name = name

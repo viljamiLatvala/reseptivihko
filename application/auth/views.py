@@ -31,6 +31,7 @@ def auth_signup():
     if request.method == "GET":
         return render_template("auth/signupform.html", form = SignupForm())
 
+    print("HALOO")
     form = SignupForm(request.form)
 
     if not form.validate():
@@ -44,7 +45,6 @@ def auth_signup():
     newUser = User(form.name.data,form.username.data,form.password.data)
     db.session().add(newUser)
     db.session().commit()
-
-    createdUser = User.query.filter(username=form.username.data, password=form.password.data).first()
+    createdUser = User.query.filter_by(username=form.username.data, password=form.password.data).first()
     login_user(createdUser)
     return redirect(url_for("index"))

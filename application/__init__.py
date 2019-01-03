@@ -39,6 +39,5 @@ def load_user(user_id):
 
 try:
     db.create_all()
-    ##DEFAULT-USERIN luominen tähän?
 except:
     pass
