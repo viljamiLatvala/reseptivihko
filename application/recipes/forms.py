@@ -1,8 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, validators
+from wtforms import StringField, TextAreaField, IntegerField, validators
 
 class RecipeForm(FlaskForm):
     name = StringField("Name", [validators.Length(min=3)])
+    introduction = TextAreaField("Introduction", [validators.Length(min=10)])
+    preptime = IntegerField("Preparation time (minutes)", [validators.required()])
     instruction = TextAreaField("Instruction", [validators.Length(min=10)])
     tags = TextAreaField("Tags")
 
@@ -11,6 +13,8 @@ class RecipeForm(FlaskForm):
 
 class RecipeEditForm(FlaskForm):
     name = StringField("Name", [validators.Length(min=3)])
+    introduction = TextAreaField("Introduction", [validators.Length(min=10)])
+    preptime = IntegerField("Preparation time (minutes)", [validators.required()])
     instruction = TextAreaField("Instruction", [validators.Length(min=10)])
     tags = TextAreaField("Tags")
  

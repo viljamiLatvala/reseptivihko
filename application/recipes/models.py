@@ -8,15 +8,16 @@ tags = db.Table('tags',
 
 class Recipe(Base):
     name = db.Column(db.String(144), nullable=False)
-    instruction = db.Column(db.String(6000), nullable=False)
+    introduction = db.Column(db.String(144))
+    instruction = db.Column(db.String(6000))
+    preptime = db.Column(db.Integer)
 
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     tags = db.relationship('Tag', secondary=tags, lazy='subquery',
         backref=db.backref('recipes', lazy=True))
 
-    def __init__(self, name, instruction = 'empty'):
+    def __init__(self, name):
         self.name = name
-        self.instruction = instruction
         
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)

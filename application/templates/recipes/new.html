@@ -10,6 +10,20 @@
           {% endfor %}
     </div>
     <div class="form-group">
+        <label for="introduction">{{form.introduction.label}}</label>
+        {{form.introduction}}
+          {% for error in form.introduction.errors %}
+            <small id="error" class="form-text text-muted">{{ error }}</small>
+          {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="preptime">{{ form.preptime.label }}</label>
+          {{ form.preptime }}
+          {% for error in form.preptime.errors %}
+            <small id="error" class="form-text text-muted">{{ error }}</small>
+          {% endfor %}
+    </div>
+    <div class="form-group">
         <label for="name">{{form.instruction.label}}</label>
         {{form.instruction}}
           {% for error in form.instruction.errors %}

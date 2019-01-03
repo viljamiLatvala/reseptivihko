@@ -71,12 +71,16 @@ def recipe_edit(recipe_id):
     if not form.validate():
         faultyRecipe = Recipe(request.form['name'])
         faultyRecipe.id = recipe_id
+        faultyRecipe.introduction = request.form.get("introduction")
         faultyRecipe.instruction = request.form['instruction']
+        faultyRecipe.preptime = request.form.get("preptime")
         return render_template("recipes/edit.html", recipe = faultyRecipe, form = form)
 
     r = Recipe.query.get(recipe_id)
     r.name = request.form.get("name")
+    r.introduction = request.form.get("introduction")
     r.instruction = request.form.get("instruction")
+    r.preptime = request.form.get("preptime")
 
     add_tags(tags, r)
 
@@ -95,7 +99,9 @@ def recipes_create():
         return render_template("recipes/new.html", form = form)
 
     r = Recipe(form.name.data)
+    r.introduction = form.introduction.data
     r.instruction = form.instruction.data
+    r.preptime = form.preptime.data
     r.account_id = current_user.id
 
     add_tags(tags, r)

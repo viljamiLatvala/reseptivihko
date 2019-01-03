@@ -9,7 +9,22 @@
               {% endfor %}
         </div>
         <div class="form-group">
-            <label for="name">{{form.instruction.label}}</label>
+            <label for="introduction">{{form.introduction.label}}</label>
+            {% set formValue = form.introduction.process_data(recipe.introduction) %}
+            {{form.introduction}}
+              {% for error in form.introduction.errors %}
+                <small id="error" class="form-text text-muted">{{ error }}</small>
+              {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="preptime">{{ form.preptime.label }}</label>
+              {{ form.preptime(value=recipe.preptime) }}
+              {% for error in form.preptime.errors %}
+                <small id="error" class="form-text text-muted">{{ error }}</small>
+              {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="instruction">{{form.instruction.label}}</label>
               {% set formValue = form.instruction.process_data(recipe.instruction) %}
                 {{form.instruction}}
               {% for error in form.instruction.errors %}
@@ -17,7 +32,7 @@
               {% endfor %}
         </div>
         <div class="form-group">
-            <label for="name">{{form.tags.label}}</label>
+            <label for="tags">{{form.tags.label}}</label>
             {{form.tags}}
               {% for error in form.tags.errors %}
                 <small id="error" class="form-text text-muted">{{ error }}</small>
