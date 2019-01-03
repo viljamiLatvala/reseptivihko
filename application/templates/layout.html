@@ -24,6 +24,9 @@
               <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('recipes_index')}}">Recipe list</a>
               </li>
+              <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('tags_index')}}">Browse tags</a>
+              </li>
             </ul>
             <div class="form-inline my-2 my-lg-0">
               {% if current_user.is_authenticated %}

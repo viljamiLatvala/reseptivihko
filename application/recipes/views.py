@@ -14,7 +14,9 @@ def tags_index():
 ##Individual tag view listing recipes associated with it
 @app.route("/tags/<tag_id>/", methods=["GET"])
 def tag_info(tag_id):
-    return render_template("tags/tag.html")
+    tag = Tag.query.get(tag_id)
+    recipes = find_recipes_with_tag(tag)
+    return render_template("tags/tag.html", tag = tag, recipes = recipes)
 
 #Recipe routes
 ##List of all recipes
@@ -103,7 +105,7 @@ def recipes_create():
 
     return redirect(url_for("recipes_index"))
 
-#Helper functions
+#Helper functions and queries
 def add_tags(tags, recipe):
      for tag in tags:
         tagExists = Tag.query.filter(Tag.name == tag).first()
@@ -115,14 +117,26 @@ def add_tags(tags, recipe):
 
 
 def find_recipe_tags(recipe):
-    print("ID:", recipe.id)
-    statement = text("SELECT tag.name FROM tag, recipe, tags"
+    statement = text("SELECT tag.id, tag.name FROM tag, recipe, tags"
                         " WHERE tag.id = tags.tag_id" 
                         " AND recipe.id = tags.recipe_id" 
                         " AND recipe.name = :name").params(name = recipe.name)
     query = db.engine.execute(statement)
     response = []
     for row in query:
-        response.append(row[0])
+        response.append(row)
 
+    return response
+
+def find_recipes_with_tag(tag):
+    statement = text("SELECT recipe.id, recipe.name FROM recipe, tags, tag"
+                        " WHERE tag.id = tags.tag_id" 
+                        " AND recipe.id = tags.recipe_id"
+                        " AND tag.name = :tag").params(tag = tag.name)
+    query = db.engine.execute(statement)
+    response = []
+    for row in query:
+        response.append(row)
+
+    print(response)
     return response

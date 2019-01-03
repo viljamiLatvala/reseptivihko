@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+  
+{% block body %}
+<h1>{{ tag.name }}</h1>
+{% for recipe in recipes %}
+    <tr>
+      <td><a href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
+    </tr>
+    {% endfor %}
+{% endblock %}

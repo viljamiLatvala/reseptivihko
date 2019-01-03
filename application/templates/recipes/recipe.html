@@ -10,7 +10,7 @@
 Tags:
 {% for tag in tags %}
     <tr>
-      <td><a href="{{ url_for('recipe_info', recipe_id=recipe.id)}}">{{tag}}</a></td>
+      <td><a href="{{ url_for('tag_info', tag_id=tag[0])}}">{{tag[1]}}</a></td>
     </tr>
     {% endfor %}
 {% endblock %}
