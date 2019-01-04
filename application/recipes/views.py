@@ -109,7 +109,16 @@ def recipe_edit(recipe_id):
 ##Route for adding a new recipe
 @app.route("/recipes/", methods=["POST"])
 def recipes_create():
+
     form = RecipeForm(request.form)
+
+    nameExists = Recipe.query.filter(Recipe.name == form.name.data).count()
+    if nameExists:
+        errors = list(form.name.errors)
+        errors.append('Recipe name must be unique')
+        form.name.errors = tuple(errors)
+        return render_template("recipes/new.html", form = form)
+
     tagsString = form.tags.data.strip()
     tags = tagsString.split(',')
     ingredients = form.ingredients.data.splitlines()
