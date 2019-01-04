@@ -4,35 +4,38 @@
 <form method="POST" action="{{ url_for('recipes_create') }}">
     <div class="form-group">
       <label for="name">{{ form.name.label }}</label>
-        {{ form.name }}
+        {{ form.name(class='form-control')}}
           {% for error in form.name.errors %}
             <small id="error" class="form-text text-muted">{{ error }}</small>
           {% endfor %}
     </div>
     <div class="form-group">
-        <label for="ingredients">{{form.ingredients.label}}</label>
-        {{form.ingredients}}
-          {% for error in form.ingredients.errors %}
-            <small id="error" class="form-text text-muted">{{ error }}</small>
-          {% endfor %}
-    </div>
-    <div class="form-group">
         <label for="preptime">{{ form.preptime.label }}</label>
-          {{ form.preptime }}
+          {{ form.preptime(class='form-control')}}
           {% for error in form.preptime.errors %}
             <small id="error" class="form-text text-muted">{{ error }}</small>
           {% endfor %}
     </div>
     <div class="form-group">
+        <label for="ingredients">{{form.ingredients.label}}</label>
+        <small id="ingredientsHelp" class="form-text text-muted">Each line should contain ingredient name and amount. Separate ingredients with line changes</small>
+        {{form.ingredients(class='form-control')}}
+          {% for error in form.ingredients.errors %}
+            <small id="error" class="form-text text-muted">{{ error }}</small>
+          {% endfor %}
+    </div>
+
+    <div class="form-group">
         <label for="name">{{form.instruction.label}}</label>
-        {{form.instruction}}
+        {{form.instruction(class='form-control')}}
           {% for error in form.instruction.errors %}
             <small id="error" class="form-text text-muted">{{ error }}</small>
           {% endfor %}
     </div>
     <div class="form-group">
         <label for="name">{{form.tags.label}}</label>
-        {{form.tags}}
+        <small id="ingredientsHelp" class="form-text text-muted">Separate tags with commas</small>
+        {{form.tags(class='form-control')}}
           {% for error in form.tags.errors %}
             <small id="error" class="form-text text-muted">{{ error }}</small>
           {% endfor %}
