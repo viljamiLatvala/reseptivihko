@@ -13,7 +13,10 @@ Various documentation about the project is located in the [documents-file](../ma
 Application is running on Heroku at: https://reseptivihko.herokuapp.com
 
 For testing purposes, feel free to use following admin-credentials:
-username: admin
+
+
+username:  admin
 password: password
+
 
 For basic user functionality, you can create your own user-account.
