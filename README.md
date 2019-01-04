@@ -14,7 +14,9 @@ Application is running on Heroku at: https://reseptivihko.herokuapp.com
 
 For testing purposes, feel free to use following admin-credentials:
 
+
 __username:__  admin
 __password:__ password
+
 
 For basic user functionality, you can create your own user-account.
