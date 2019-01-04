@@ -1,13 +1,19 @@
-# Reseptivihko
-## Aihekuvaus
-Tietokantasovellus-kurssille tehtävä harjoitustyö. Web-sovellus reseptien kirjaamiseksi ja selaamiseksi. Sovelluksessa käyttäjä pystyy luomaan käyttäjätunnuksen, ja lisäämään omia reseptejään muiden katseltaviksi. Reseptit koostuvat ainesosista, joita käyttäjä voi valita olemassaolevista tai lisätä omiaan. Mahdollisesti ainesosille on mahdollista antaa tietoa sen ravintoarvoista, joiden avulla on mahdollista laske annosten ravintoarvoja. Projektiin tullaan julkaisemaan myös dokumentaatiota kuten tietokantakaavio, sekä ohjeet palvelimen pystyttämiseksi lokaalisti tai Herokua käyttäen.
+# Reseptivihko - RecipeApp
+## Description
+This is a web application created as course work for the course Tietokantojen harjoitustyö (Database excercise project). The idea of the application is for users to be able to add and browse recipes. Recipes contain such information as name, preparation time, ingredient description and instructions. Users are also able to mark their recipes with tags of their choosing. 
 
-## Dokumentaatio
-Työ sisältää myös erinäistä dokumentaatiota, joka kasataan repositorion [documents-kansioon](../master/documentation). Toistaiseksi dokumentaatiossa on käytetty suomen ja englannin kieltä sekaisin, projektin valmistumiseen mennessä pyrkimyksenä on että kaikki projektin dokumentaatio ja koodi olisi kirjoitettuna yhdellä ja samalla kielellä.
+## Documentation
+Various documentation about the project is located in the [documents-file](../master/documentation) of the repository. Here are links to some key documentation:
 
-* [Tietokantakaavio](../master/documentation/database_diagram.md)
+* [Database diagram](../master/documentation/database_diagram.md)
 
 * [User stories](../master/documentation/user_stories.md)
 
-## Sovellus Herokussa
-Sovellus käynnissä osoitteessa https://reseptivihko.herokuapp.com
+## Application on Heroku
+Application is running on Heroku at: https://reseptivihko.herokuapp.com
+
+For testing purposes, feel free to use following admin-credentials:
+username: admin
+password: password
+
+For basic user functionality, you can create your own user-account.
