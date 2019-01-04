@@ -2,7 +2,7 @@
   
 {% block body %}
 <h1>{{ recipe.name }}</h1>
-<ul>
+<ul class= "list-unstyled">
 <li>Added by: {{ recipeCreator.username }}</li>
 <li>Preparation time: {{ recipe.preptime }}</li>
 {% if current_user.get_id() %}
@@ -12,18 +12,16 @@
 {% endif %}
 </ul>
 <h2>Ingredients needed for this recipe:</h2>
-<ul>
+<ul class="list-group list-group-flush">
     {% for ingredient in ingredients %}
-    <li>{{ ingredient.line }}</li>
+    <li class="list-group-item">{{ ingredient.line }}</li>
     {% endfor %}
 </ul>
 <h2>Instructions:</h2>
 <p>{{ recipe.instruction }}</p>
 
 <h2>Tags:</h2>
-<ul>
   {% for tag in tags %}
-      <li><a href="{{ url_for('tag_info', tag_id=tag[0])}}">{{tag[1]}}</a></li>
+      <a href="{{ url_for('tag_info', tag_id=tag[0])}}" class="btn btn-primary">{{tag[1]}}</a>
   {% endfor %}
-</ul>
 {% endblock %}

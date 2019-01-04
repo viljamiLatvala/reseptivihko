@@ -11,7 +11,9 @@ from sqlalchemy.sql import text
 ##List of tags
 @app.route("/tags", methods=["GET"])
 def tags_index():
-    return render_template("tags/list.html", tags = Tag.query.all())
+    statement = "SELECT tag.id,tag.name, COUNT(tag_id) AS count FROM tag,tags WHERE tag.id = tags.tag_id GROUP BY tag.name"
+    query = db.engine.execute(statement)
+    return render_template("tags/list.html", tags = query)
 
 ##Individual tag view listing recipes associated with it
 @app.route("/tags/<tag_id>/", methods=["GET"])
@@ -156,7 +158,7 @@ def find_recipe_tags(recipe):
     return response
 
 def find_recipes_with_tag(tag):
-    statement = text("SELECT recipe.id, recipe.name FROM recipe, tags, tag"
+    statement = text("SELECT recipe.id, recipe.name, recipe.preptime FROM recipe, tags, tag"
                         " WHERE tag.id = tags.tag_id" 
                         " AND recipe.id = tags.recipe_id"
                         " AND tag.name = :tag").params(tag = tag.name)

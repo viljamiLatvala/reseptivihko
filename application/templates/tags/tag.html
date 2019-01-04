@@ -2,9 +2,16 @@
   
 {% block body %}
 <h1>{{ tag.name }}</h1>
+<table class="table">
+  <tr>
+    <th>Recipe</th>
+    <th>Preparation time</th>
+  </tr>
 {% for recipe in recipes %}
     <tr>
       <td><a href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
+      <td>{{recipe[2]}}</td>
     </tr>
     {% endfor %}
+</table>
 {% endblock %}
