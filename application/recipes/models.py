@@ -8,7 +8,6 @@ tags = db.Table('tags',
 
 class Recipe(Base):
     name = db.Column(db.String(144), nullable=False)
-    introduction = db.Column(db.String(144))
     instruction = db.Column(db.String(6000))
     preptime = db.Column(db.Integer)
 
@@ -25,3 +24,11 @@ class Tag(db.Model):
 
     def __init__(self, name):
         self.name = name
+
+class Ingredient(Base):
+    line = db.Column(db.String(500), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+
+    def __init__(self, line, recipe_id):
+        self.line = line
+        self.recipe_id = recipe_id

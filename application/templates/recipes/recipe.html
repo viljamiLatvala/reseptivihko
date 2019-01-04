@@ -2,16 +2,28 @@
   
 {% block body %}
 <h1>{{ recipe.name }}</h1>
-<p>{{ recipe.introduction }}</p>
-<p>by: {{ recipeCreator.username }}     preparation time: {{ recipe.preptime }}</p>
-<p>{{ recipe.instruction }}</p>
-{% if current_user.get_id() == recipe.account_id %}
-<a href="{{ url_for('recipe_editform', recipe_id=recipe.id)}}">Edit</a>
+<ul>
+<li>Added by: {{ recipeCreator.username }}</li>
+<li>Preparation time: {{ recipe.preptime }}</li>
+{% if current_user.get_id() %}
+  {% if (current_user.get_id() == recipe.account_id) or (current_user.get_role() ==  "admin") %}
+  <li><a href="{{ url_for('recipe_editform', recipe_id=recipe.id)}}">Edit recipe</a></li>
+  {% endif %}
 {% endif %}
-Tags:
-{% for tag in tags %}
-    <tr>
-      <td><a href="{{ url_for('tag_info', tag_id=tag[0])}}">{{tag[1]}}</a></td>
-    </tr>
+</ul>
+<h2>Ingredients needed for this recipe:</h2>
+<ul>
+    {% for ingredient in ingredients %}
+    <li>{{ ingredient.line }}</li>
     {% endfor %}
+</ul>
+<h2>Instructions:</h2>
+<p>{{ recipe.instruction }}</p>
+
+<h2>Tags:</h2>
+<ul>
+  {% for tag in tags %}
+      <li><a href="{{ url_for('tag_info', tag_id=tag[0])}}">{{tag[1]}}</a></li>
+  {% endfor %}
+</ul>
 {% endblock %}
