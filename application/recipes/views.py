@@ -96,7 +96,19 @@ def recipe_edit(recipe_id):
     r.instruction = request.form.get("instruction")
     r.preptime = request.form.get("preptime")
 
-    add_tags(tags, r)
+##rumaa toisintoa
+    if not add_tags(tags, r):
+        faultyRecipe = Recipe(request.form['name'])
+        faultyRecipe.id = recipe_id
+        faultyRecipe.instruction = request.form['instruction']
+        faultyRecipe.preptime = request.form.get("preptime")
+        faultyIngredients = request.form.get("ingredients")
+        faultyTags = request.form.get("tags")
+        errors = list(form.tags.errors)
+        errors.append('Maximum length of a tag is 144 characters')
+        form.tags.errors = tuple(errors)
+        return render_template("recipes/edit.html", recipe = faultyRecipe, form = form, tags = faultyTags, ingredients = faultyIngredients)
+
 
     db.session().commit()
 
@@ -130,7 +142,12 @@ def recipes_create():
     r.instruction = form.instruction.data
     r.preptime = form.preptime.data
     r.account_id = current_user.id
-    add_tags(tags, r)
+    if not add_tags(tags, r):
+        errors = list(form.tags.errors)
+        errors.append('Maximum length of a tag is 144 characters')
+        form.tags.errors = tuple(errors)
+        return render_template("recipes/new.html", form = form)
+
     db.session().add(r)
     db.session().commit()
 
@@ -144,6 +161,8 @@ def add_tags(tags, recipe):
     ## TAG DELETION DOES NOT WORK AND TAGS ARE CASE SENSITIVE
     for tag in tags:
         tag = tag.strip()
+        if len(tag) > 144:
+            return False
         if tag == "":
             continue
         tagExists = Tag.query.filter(Tag.name == tag).first()
@@ -152,6 +171,7 @@ def add_tags(tags, recipe):
         else:
             newTag = Tag(tag)
             recipe.tags.append(newTag)
+    return True
 
 
 def find_recipe_tags(recipe):

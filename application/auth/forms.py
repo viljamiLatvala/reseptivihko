@@ -9,8 +9,7 @@ class LoginForm(FlaskForm):
         csrf = False
 
 class SignupForm(FlaskForm):
-    username = StringField("Username",[validators.Length(min=3)])
-    password = PasswordField("Password",[validators.Length(min=8)])
-
+    username = StringField("Username",[validators.Length(min=3,max=64)])
+    password = PasswordField("Password",[validators.Length(min=8, max=144)])
     class Meta:
         csrf = False
