@@ -3,13 +3,13 @@
 This is a web application created as course work for the course Tietokantojen harjoitustyö (Database excercise project). The idea of the application is for users to be able to add and browse recipes. Recipes contain such information as name, preparation time, ingredient description and instructions. Users are also able to mark their recipes with tags of their choosing. 
 
 ## Documentation
-Various documentation about the project is located in the [documents-file](../master/documentation) of the repository. Here are links to some key documentation:
+Various documentation about the project is located in the [documents-folder](../master/documentation) of the repository. Here are links to some key documentation:
 
 * [Database diagram](../master/documentation/database_diagram.md)
 
 * [User stories](../master/documentation/user_stories.md)
 
-* [Running your own instance] (../master/documentation/startup_guide.md)
+* [Running your own instance](../master/documentation/startup_guide.md)
       
 
 ## Application on Heroku
