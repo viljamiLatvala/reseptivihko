@@ -11,7 +11,7 @@ from sqlalchemy.sql import text
 ##List of tags
 @app.route("/tags", methods=["GET"])
 def tags_index():
-    statement = "SELECT tag.id,tag.name, COUNT(tag_id) AS count FROM tag,tags WHERE tag.id = tags.tag_id GROUP BY tag.name"
+    statement = "SELECT tag.id,tag.name, COUNT(tag_id) AS count FROM tag,tags WHERE tag.id = tags.tag_id GROUP BY tag.name, tag.id"
     query = db.engine.execute(statement)
     return render_template("tags/list.html", tags = query)
 
