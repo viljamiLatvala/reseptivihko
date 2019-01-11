@@ -9,6 +9,9 @@ Various documentation about the project is located in the [documents-file](../ma
 
 * [User stories](../master/documentation/user_stories.md)
 
+* [Running your own instance] (../master/documentation/startup_guide.md)
+      
+
 ## Application on Heroku
 Application is running on Heroku at: https://reseptivihko.herokuapp.com
 
