@@ -18,19 +18,5 @@ def tags_index():
 @app.route("/tags/<tag_id>/", methods=["GET"])
 def tag_info(tag_id):
     tag = Tag.query.get(tag_id)
-    recipes = find_recipes_with_tag(tag)
+    recipes = Tag.find_recipes_with_tag(tag)
     return render_template("tags/tag.html", tag = tag, recipes = recipes)
-
-
-def find_recipes_with_tag(tag):
-    statement = text("SELECT recipe.id, recipe.name, recipe.preptime FROM recipe, tags, tag"
-                        " WHERE tag.id = tags.tag_id" 
-                        " AND recipe.id = tags.recipe_id"
-                        " AND tag.name = :tag").params(tag = tag.name)
-    query = db.engine.execute(statement)
-    response = []
-    for row in query:
-        response.append(row)
-
-    print(response)
-    return response

@@ -8,22 +8,7 @@ from application.auth.models import User
 from application.recipes.forms import RecipeForm, RecipeEditForm
 
 from sqlalchemy.sql import text
-#Tag routes to be moved into their own respective folder
-##List of tags
-# @app.route("/tags", methods=["GET"])
-# def tags_index():
-#     statement = "SELECT tag.id,tag.name, COUNT(tag_id) AS count FROM tag,tags WHERE tag.id = tags.tag_id GROUP BY tag.name, tag.id"
-#     query = db.engine.execute(statement)
-#     return render_template("tags/list.html", tags = query)
 
-# ##Individual tag view listing recipes associated with it
-# @app.route("/tags/<tag_id>/", methods=["GET"])
-# def tag_info(tag_id):
-#     tag = Tag.query.get(tag_id)
-#     recipes = find_recipes_with_tag(tag)
-#     return render_template("tags/tag.html", tag = tag, recipes = recipes)
-
-#Recipe routes
 ##List of all recipes
 @app.route("/recipes", methods=["GET"])
 def recipes_index():
@@ -39,8 +24,7 @@ def recipes_form():
 @app.route("/recipes/<recipe_id>/", methods=["GET"])
 def recipe_info(recipe_id):
     recipe = Recipe.query.get(recipe_id)
-    print(find_recipe_tags(recipe))
-    tags = find_recipe_tags(recipe)
+    tags = Recipe.find_recipe_tags(recipe)
     recipeCreator = User.query.filter_by(id=recipe.account_id).first();
     ingredients = Ingredient.query.filter_by(recipe_id=recipe_id)
     return render_template("recipes/recipe.html", recipe = recipe, recipeCreator = recipeCreator, tags = tags, ingredients = ingredients)
@@ -49,7 +33,7 @@ def recipe_info(recipe_id):
 @app.route("/recipes/<recipe_id>/edit/", methods=["GET"])
 def recipe_editform(recipe_id):
     fetched_recipe = Recipe.query.get(recipe_id)
-    fetched_tags = find_recipe_tags(fetched_recipe)
+    fetched_tags = Recipe.find_recipe_tags(fetched_recipe)
     joined_tags = ""
     for tag in fetched_tags:
         joined_tags += tag[1]
@@ -156,33 +140,7 @@ def add_tags(tags, recipe):
         else:
             newTag = Tag(tag)
             recipe.tags.append(newTag)
-
-
-def find_recipe_tags(recipe):
-    statement = text("SELECT tag.id, tag.name FROM tag, recipe, tags"
-                        " WHERE tag.id = tags.tag_id" 
-                        " AND recipe.id = tags.recipe_id" 
-                        " AND recipe.name = :name").params(name = recipe.name)
-    query = db.engine.execute(statement)
-    response = []
-    for row in query:
-        response.append(row)
-
-    return response
-
-def find_recipes_with_tag(tag):
-    statement = text("SELECT recipe.id, recipe.name, recipe.preptime FROM recipe, tags, tag"
-                        " WHERE tag.id = tags.tag_id" 
-                        " AND recipe.id = tags.recipe_id"
-                        " AND tag.name = :tag").params(tag = tag.name)
-    query = db.engine.execute(statement)
-    response = []
-    for row in query:
-        response.append(row)
-
-    print(response)
-    return response
-
+            
 def add_ingredients(ingredients, recipe):
     ##FIRST format recipe to have no ingredients
     find_recipe_ingredients(recipe).delete()
