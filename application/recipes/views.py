@@ -82,7 +82,6 @@ def recipe_edit(recipe_id):
         return abort(401)
 
     form = RecipeEditForm(request.form)
-    form.recipe_id = recipe_id
 
     #If form does not pass validations, a new, faulty form is created to be shown along with error messages, but never put to the database
     if not form.validate():

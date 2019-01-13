@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, IntegerField, validators, ValidationError
+from wtforms import StringField, TextAreaField, IntegerField, HiddenField, validators, ValidationError
 from application.recipes.models import Recipe
 
 ##Validators for checking tag length or ingredient line length
@@ -27,14 +27,16 @@ def ingredients_length(min=-1, max=-1):
     return _ingredients_length
 
 #Making sure recipe names are unique
-def unique_name(action='new'):
+def unique_name(action):
     message = 'Name must be unique!'
     def _unique_name(form, field):
         nameExists = Recipe.query.filter(Recipe.name == field.data).count()
         if action == 'new' and nameExists:
             raise ValidationError(message)
-        elif action == 'edit' and nameExists > 1:
-            raise ValidationError(message)
+        elif action == 'edit' and nameExists:
+            existing = Recipe.query.filter(Recipe.name == field.data).first()
+            if int(existing.id) != int(form.recipeId.data):
+                raise ValidationError(message)
     return _unique_name
 
 ##Form for creating a recipe
@@ -50,6 +52,7 @@ class RecipeForm(FlaskForm):
         csrf = False
 
 class RecipeEditForm(FlaskForm):
+    recipeId = HiddenField("Id")
     name = StringField("Name", [validators.Length(min=3, max=144), unique_name(action = 'edit')])
     ingredients = TextAreaField("Ingredients", [ingredients_length(min = 3, max = 500)])
     preptime = IntegerField("Preparation time (minutes)", [validators.required()])
