@@ -5,7 +5,7 @@ from application import app, db
 from application.recipes.models import Recipe, Ingredient
 from application.tags.models import Tag
 from application.auth.models import User
-from application.recipes.forms import RecipeForm
+from application.recipes.forms import RecipeForm, RecipeEditForm
 
 from sqlalchemy.sql import text
 #Tag routes to be moved into their own respective folder
@@ -60,7 +60,7 @@ def recipe_editform(recipe_id):
     for ingredient in fetched_ingredients:
         joined_ingredients += ingredient.line + "\n"
 
-    return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeForm(), tags = joined_tags, ingredients = joined_ingredients)
+    return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeEditForm(), tags = joined_tags, ingredients = joined_ingredients)
 
 ##Route for deleting a recipe
 @app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
@@ -81,7 +81,8 @@ def recipe_edit(recipe_id):
     if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
         return abort(401)
 
-    form = RecipeForm(request.form)
+    form = RecipeEditForm(request.form)
+    form.recipe_id = recipe_id
 
     #If form does not pass validations, a new, faulty form is created to be shown along with error messages, but never put to the database
     if not form.validate():
@@ -115,6 +116,7 @@ def recipe_edit(recipe_id):
 def recipes_create():
 
     form = RecipeForm(request.form)
+    form.recipe_id = -1
 #Checking that the form passes validations
     if not form.validate():
         return render_template("recipes/new.html", form = form)

@@ -27,15 +27,30 @@ def ingredients_length(min=-1, max=-1):
     return _ingredients_length
 
 #Making sure recipe names are unique
-def unique_name(form, field):
-    nameExists = Recipe.query.filter(Recipe.name == field.data).count()
-    if nameExists:
-        raise ValidationError('Name must be unique!')
+def unique_name(action='new'):
+    message = 'Name must be unique!'
+    def _unique_name(form, field):
+        nameExists = Recipe.query.filter(Recipe.name == field.data).count()
+        if action == 'new' and nameExists:
+            raise ValidationError(message)
+        elif action == 'edit' and nameExists > 1:
+            raise ValidationError(message)
+    return _unique_name
 
 ##Form for creating a recipe
 ###Should validator maxes be inherited from models.py?
 class RecipeForm(FlaskForm):
-    name = StringField("Name", [validators.Length(min=3, max=144), unique_name])
+    name = StringField("Name", [validators.Length(min=3, max=144), unique_name(action = 'new')])
+    ingredients = TextAreaField("Ingredients", [ingredients_length(min = 3, max = 500)])
+    preptime = IntegerField("Preparation time (minutes)", [validators.required()])
+    instruction = TextAreaField("Instruction", [validators.Length(min=10, max=6000)])
+    tags = TextAreaField("Tags", [tag_length(min=3, max=18)])
+
+    class Meta:
+        csrf = False
+
+class RecipeEditForm(FlaskForm):
+    name = StringField("Name", [validators.Length(min=3, max=144), unique_name(action = 'edit')])
     ingredients = TextAreaField("Ingredients", [ingredients_length(min = 3, max = 500)])
     preptime = IntegerField("Preparation time (minutes)", [validators.required()])
     instruction = TextAreaField("Instruction", [validators.Length(min=10, max=6000)])
