@@ -35,9 +35,12 @@ def recipe_editform(recipe_id):
     fetched_recipe = Recipe.query.get(recipe_id)
     fetched_tags = Recipe.find_recipe_tags(fetched_recipe)
     joined_tags = ""
-    for tag in fetched_tags:
-        joined_tags += tag[1]
-        joined_tags += ","
+
+    tags_length = len(fetched_tags)
+    for i in range(tags_length):
+        joined_tags += fetched_tags[i][1]
+        if i < tags_length-1:
+            joined_tags += ', '
 
     fetched_ingredients = find_recipe_ingredients(fetched_recipe)
     joined_ingredients = ""
@@ -77,20 +80,22 @@ def recipe_edit(recipe_id):
         faultyTags = request.form.get("tags")
         return render_template("recipes/edit.html", recipe = faultyRecipe, form = form, tags = faultyTags, ingredients = faultyIngredients)
 
-    #Creating a new recipe to be placed into the database
-    r = Recipe.query.get(recipe_id)
-    r.name = request.form.get("name")
-    r.instruction = request.form.get("instruction")
-    r.preptime = request.form.get("preptime")
+    #Fetching and editing the recipe
+    changedRecipe = Recipe.query.get(recipe_id)
+    name = request.form.get("name").strip()
+    name = name[0].upper() + name[1:]
+    changedRecipe.name = name
+    changedRecipe.instruction = request.form.get("instruction")
+    changedRecipe.preptime = request.form.get("preptime")
 
     #Add tags for the recipe
     tags = form.tags.data.split(',')
-    add_tags(tags, r)
+    add_tags(tags, changedRecipe)
 
     db.session().commit()
 
     ingredients = request.form.get("ingredients").splitlines()
-    add_ingredients(ingredients, r)
+    add_ingredients(ingredients, changedRecipe)
 
     return redirect(url_for("recipes_index"))
 
@@ -105,22 +110,24 @@ def recipes_create():
         return render_template("recipes/new.html", form = form)
 
 #Adding the new recipe
-    r = Recipe(form.name.data)
-    r.instruction = form.instruction.data
-    r.preptime = form.preptime.data
-    r.account_id = current_user.id
+    name = form.name.data.strip()
+    name = (name[0].upper() + name[1:])
+    newRecipe = Recipe(name)
+    newRecipe.instruction = form.instruction.data
+    newRecipe.preptime = form.preptime.data
+    newRecipe.account_id = current_user.id
 
 #Separating and adding tags
     tagsString = form.tags.data.strip()
     tags = tagsString.split(',')
-    add_tags(tags, r)
+    add_tags(tags, newRecipe)
 
 #Commiting changes
-    db.session().add(r)
+    db.session().add(newRecipe)
     db.session().commit()
     
 #Ingredients need recipe ID, so they are added only after the recipe is added
-    addedRecipe = Recipe.query.filter(Recipe.name == r.name).first()
+    addedRecipe = Recipe.query.filter(Recipe.name == newRecipe.name).first()
     ingredients = form.ingredients.data.splitlines()
     add_ingredients(ingredients, addedRecipe)
 
@@ -128,24 +135,34 @@ def recipes_create():
 
 #Helper functions and queries
 def add_tags(tags, recipe):
-    ## TAG DELETION DOES NOT WORK AND TAGS ARE CASE SENSITIVE
-    for tag in tags:
-        tag = tag.strip()
+    prev_tags = Recipe.find_recipe_tags(recipe)
+    for tag in prev_tags:
+        rmtag = Tag.query.filter(Tag.id == tag[0]).first()
+        recipe.tags.remove(rmtag)
 
-        if tag == "":
-            continue
+    for tag in tags:
+        #Format tags to obey following rules:
+        #no leading or trailing whitespace
+        #capitalized, otherwise lowercase
+        tag = tag.strip().lower().capitalize()
+
         tagExists = Tag.query.filter(Tag.name == tag).first()
         if tagExists:
             recipe.tags.append(tagExists)
         else:
             newTag = Tag(tag)
             recipe.tags.append(newTag)
-            
+
+def edit_tags(new_tags, recipe):
+    prev_tags = Recipe.find_recipe_tags(recipe)
+
 def add_ingredients(ingredients, recipe):
     ##FIRST format recipe to have no ingredients
     find_recipe_ingredients(recipe).delete()
 
     for line in ingredients:
+        line = line.strip()
+        line = line[0].upper() + line[1:]
         ingredient = Ingredient(line, recipe.id)
         db.session.add(ingredient)
     db.session.commit()
