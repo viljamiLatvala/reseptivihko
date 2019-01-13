@@ -55,6 +55,7 @@ def recipe_delete(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
         return abort(401)
+    find_recipe_ingredients(recipe).delete()
     db.session.delete(recipe)
     db.session.commit()
     return redirect(url_for("recipes_index"))
