@@ -22,6 +22,6 @@
 
 <h2>Tags:</h2>
   {% for tag in tags %}
-      <a href="{{ url_for('tag_info', tag_id=tag[0])}}" class="btn btn-primary">{{tag[1]}}</a>
+      <a href="{{ url_for('tag_info', tag_id=tag[0])}}" class="btn btn-warning">{{tag[1]}}</a>
   {% endfor %}
 {% endblock %}

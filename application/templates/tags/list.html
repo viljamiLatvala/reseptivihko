@@ -8,7 +8,7 @@
     </tr>
     {% for tag in tags %}
     <tr>
-      <td><a href="{{ url_for('tag_info', tag_id=tag.id)}}">{{tag.name}}</a></td>
+      <td><a class="text-success" href="{{ url_for('tag_info', tag_id=tag.id)}}">{{tag.name}}</a></td>
       <td>{{tag.count}}</td>
     </tr>
     {% endfor %}

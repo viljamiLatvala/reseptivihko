@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 
 {% block body %}
-{{ error }}
 <h1>Welcome! Please log in</h1>
+
 <form method="POST" action="{{ url_for('auth_login') }}">
+            <p class="text-danger"> {{ error }} </p>
             <div class="form-group">
                   <label for="username">{{ form.username.label }}</label>
                         {{ form.username(class="form-control") }}

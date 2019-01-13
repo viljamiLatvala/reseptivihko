@@ -9,7 +9,7 @@
   </tr>
 {% for recipe in recipes %}
     <tr>
-      <td><a href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
+      <td><a class="text-success" href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
       <td>{{recipe[2]}}</td>
     </tr>
     {% endfor %}
