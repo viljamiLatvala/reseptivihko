@@ -75,13 +75,14 @@ def recipe_delete(recipe_id):
 @app.route("/recipes/<recipe_id>/", methods=["POST"])
 def recipe_edit(recipe_id):
     
+    #POST is not accepted if current user is not the creator of the recipe or an administrator
     recipe = Recipe.query.get(recipe_id)
     if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
         return abort(401)
 
     form = RecipeForm(request.form)
-    tags = form.tags.data.split(',')
 
+    #If form does not pass validations, a new, faulty form is created to be shown along with error messages, but never put to the database
     if not form.validate():
         faultyRecipe = Recipe(request.form['name'])
         faultyRecipe.id = recipe_id
@@ -91,18 +92,20 @@ def recipe_edit(recipe_id):
         faultyTags = request.form.get("tags")
         return render_template("recipes/edit.html", recipe = faultyRecipe, form = form, tags = faultyTags, ingredients = faultyIngredients)
 
+    #Creating a new recipe to be placed into the database
     r = Recipe.query.get(recipe_id)
     r.name = request.form.get("name")
     r.instruction = request.form.get("instruction")
     r.preptime = request.form.get("preptime")
 
+    #Add tags for the recipe
+    tags = form.tags.data.split(',')
     add_tags(tags, r)
 
     db.session().commit()
 
     ingredients = request.form.get("ingredients").splitlines()
     add_ingredients(ingredients, r)
-    
 
     return redirect(url_for("recipes_index"))
 
@@ -111,32 +114,28 @@ def recipe_edit(recipe_id):
 def recipes_create():
 
     form = RecipeForm(request.form)
-
-    nameExists = Recipe.query.filter(Recipe.name == form.name.data).count()
-    if nameExists:
-        errors = list(form.name.errors)
-        errors.append('Recipe name must be unique')
-        form.name.errors = tuple(errors)
-        return render_template("recipes/new.html", form = form)
-
-    tagsString = form.tags.data.strip()
-    tags = tagsString.split(',')
-    ingredients = form.ingredients.data.splitlines()
-
+#Checking that the form passes validations
     if not form.validate():
         return render_template("recipes/new.html", form = form)
 
+#Adding the new recipe
     r = Recipe(form.name.data)
     r.instruction = form.instruction.data
     r.preptime = form.preptime.data
     r.account_id = current_user.id
-    
+
+#Separating and adding tags
+    tagsString = form.tags.data.strip()
+    tags = tagsString.split(',')
     add_tags(tags, r)
 
+#Commiting changes
     db.session().add(r)
     db.session().commit()
     
+#Ingredients need recipe ID, so they are added only after the recipe is added
     addedRecipe = Recipe.query.filter(Recipe.name == r.name).first()
+    ingredients = form.ingredients.data.splitlines()
     add_ingredients(ingredients, addedRecipe)
 
     return redirect(url_for("recipes_index"))

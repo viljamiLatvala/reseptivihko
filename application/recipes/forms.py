@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, IntegerField, validators, ValidationError
+from application.recipes.models import Recipe
 
 ##Validators for checking tag length or ingredient line length
 # doesn't exeed set maximum lengths
@@ -25,10 +26,16 @@ def ingredients_length(min=-1, max=-1):
                 break
     return _ingredients_length
 
+#Making sure recipe names are unique
+def unique_name(form, field):
+    nameExists = Recipe.query.filter(Recipe.name == field.data).count()
+    if nameExists:
+        raise ValidationError('Name must be unique!')
+
 ##Form for creating a recipe
 ###Should validator maxes be inherited from models.py?
 class RecipeForm(FlaskForm):
-    name = StringField("Name", [validators.Length(min=3, max=144)])
+    name = StringField("Name", [validators.Length(min=3, max=144), unique_name])
     ingredients = TextAreaField("Ingredients", [ingredients_length(min = 3, max = 500)])
     preptime = IntegerField("Preparation time (minutes)", [validators.required()])
     instruction = TextAreaField("Instruction", [validators.Length(min=10, max=6000)])
