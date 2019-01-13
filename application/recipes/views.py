@@ -4,7 +4,7 @@ from application import app, db
 
 from application.recipes.models import Recipe, Tag, Ingredient
 from application.auth.models import User
-from application.recipes.forms import RecipeForm, RecipeEditForm
+from application.recipes.forms import RecipeForm
 
 from sqlalchemy.sql import text
 #Tag routes to be moved into their own respective folder
@@ -59,7 +59,7 @@ def recipe_editform(recipe_id):
     for ingredient in fetched_ingredients:
         joined_ingredients += ingredient.line + "\n"
 
-    return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeEditForm(), tags = joined_tags, ingredients = joined_ingredients)
+    return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeForm(), tags = joined_tags, ingredients = joined_ingredients)
 
 ##Route for deleting a recipe
 @app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
@@ -79,7 +79,7 @@ def recipe_edit(recipe_id):
     if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
         return abort(401)
 
-    form = RecipeEditForm(request.form)
+    form = RecipeForm(request.form)
     tags = form.tags.data.split(',')
 
     if not form.validate():
@@ -96,19 +96,7 @@ def recipe_edit(recipe_id):
     r.instruction = request.form.get("instruction")
     r.preptime = request.form.get("preptime")
 
-##rumaa toisintoa
-    if not add_tags(tags, r):
-        faultyRecipe = Recipe(request.form['name'])
-        faultyRecipe.id = recipe_id
-        faultyRecipe.instruction = request.form['instruction']
-        faultyRecipe.preptime = request.form.get("preptime")
-        faultyIngredients = request.form.get("ingredients")
-        faultyTags = request.form.get("tags")
-        errors = list(form.tags.errors)
-        errors.append('Maximum length of a tag is 144 characters')
-        form.tags.errors = tuple(errors)
-        return render_template("recipes/edit.html", recipe = faultyRecipe, form = form, tags = faultyTags, ingredients = faultyIngredients)
-
+    add_tags(tags, r)
 
     db.session().commit()
 
@@ -142,15 +130,12 @@ def recipes_create():
     r.instruction = form.instruction.data
     r.preptime = form.preptime.data
     r.account_id = current_user.id
-    if not add_tags(tags, r):
-        errors = list(form.tags.errors)
-        errors.append('Maximum length of a tag is 144 characters')
-        form.tags.errors = tuple(errors)
-        return render_template("recipes/new.html", form = form)
+    
+    add_tags(tags, r)
 
     db.session().add(r)
     db.session().commit()
-
+    
     addedRecipe = Recipe.query.filter(Recipe.name == r.name).first()
     add_ingredients(ingredients, addedRecipe)
 
@@ -161,8 +146,7 @@ def add_tags(tags, recipe):
     ## TAG DELETION DOES NOT WORK AND TAGS ARE CASE SENSITIVE
     for tag in tags:
         tag = tag.strip()
-        if len(tag) > 144:
-            return False
+
         if tag == "":
             continue
         tagExists = Tag.query.filter(Tag.name == tag).first()
@@ -171,7 +155,6 @@ def add_tags(tags, recipe):
         else:
             newTag = Tag(tag)
             recipe.tags.append(newTag)
-    return True
 
 
 def find_recipe_tags(recipe):
