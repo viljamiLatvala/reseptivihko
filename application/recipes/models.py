@@ -18,12 +18,12 @@ class Recipe(Base):
     def __init__(self, name):
         self.name = name
         
-class Tag(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(144), nullable=False)
+#class Tag(db.Model):
+#    id = db.Column(db.Integer, primary_key=True)
+#    name = db.Column(db.String(144), nullable=False)
 
-    def __init__(self, name):
-        self.name = name
+#    def __init__(self, name):
+#        self.name = name
 
 class Ingredient(Base):
     line = db.Column(db.String(500), nullable=False)
