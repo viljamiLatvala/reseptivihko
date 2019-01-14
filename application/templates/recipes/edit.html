@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
   <form method="POST" action="{{ url_for('recipe_edit', recipe_id=recipe.id) }}">
-      {{form.recipeId(value = recipe.id)}}
+      {{form.recipeId(value=recipe.id)}}
       <div class="form-group">
           <label for="name">{{ form.name.label }}</label>
           {{form.name(class="form-control", value=recipe.name)}}

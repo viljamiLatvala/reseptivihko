@@ -18,7 +18,7 @@ def recipes_index():
 @app.route("/recipes/new/")
 @login_required
 def recipes_form():
-    return render_template("recipes/new.html", form = RecipeForm())
+    return render_template("recipes/new.html", form=RecipeForm())
 
 #Individual recipe view
 @app.route("/recipes/<recipe_id>/", methods=["GET"])
@@ -27,7 +27,7 @@ def recipe_info(recipe_id):
     tags = Recipe.find_recipe_tags(recipe)
     recipeCreator = User.query.filter_by(id=recipe.account_id).first();
     ingredients = Ingredient.query.filter_by(recipe_id=recipe_id)
-    return render_template("recipes/recipe.html", recipe = recipe, recipeCreator = recipeCreator, tags = tags, ingredients = ingredients)
+    return render_template("recipes/recipe.html", recipe=recipe, recipeCreator=recipeCreator, tags=tags, ingredients=ingredients)
 
 #Form for editing specific recipe
 @app.route("/recipes/<recipe_id>/edit/", methods=["GET"])
@@ -47,7 +47,7 @@ def recipe_editform(recipe_id):
     for ingredient in fetched_ingredients:
         joined_ingredients += ingredient.line + "\n"
 
-    return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeEditForm(), tags = joined_tags, ingredients = joined_ingredients)
+    return render_template("recipes/edit.html", recipe=fetched_recipe, form=RecipeEditForm(), tags=joined_tags, ingredients=joined_ingredients)
 
 #Route for deleting a recipe
 @app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
@@ -79,7 +79,7 @@ def recipe_edit(recipe_id):
         faultyRecipe.preptime = request.form.get("preptime")
         faultyIngredients = request.form.get("ingredients")
         faultyTags = request.form.get("tags")
-        return render_template("recipes/edit.html", recipe = faultyRecipe, form = form, tags = faultyTags, ingredients = faultyIngredients)
+        return render_template("recipes/edit.html", recipe=faultyRecipe, form=form, tags=faultyTags, ingredients=faultyIngredients)
 
     #Fetching and editing the recipe
     changedRecipe = Recipe.query.get(recipe_id)
@@ -108,7 +108,7 @@ def recipes_create():
     form.recipe_id = -1
 #Checking that the form passes validations
     if not form.validate():
-        return render_template("recipes/new.html", form = form)
+        return render_template("recipes/new.html", form=form)
 
 #Adding the new recipe
     name = form.name.data.strip()

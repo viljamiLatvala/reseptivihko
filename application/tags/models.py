@@ -14,7 +14,7 @@ class Tag(db.Model):
         statement = text("SELECT recipe.id, recipe.name, recipe.preptime FROM recipe, tags, tag"
                             " WHERE tag.id = tags.tag_id" 
                             " AND recipe.id = tags.recipe_id"
-                            " AND tag.id = :tag").params(tag = tag.id)
+                            " AND tag.id = :tag").params(tag=tag.id)
         query = db.engine.execute(statement)
         response = []
         for row in query:
