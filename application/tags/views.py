@@ -14,7 +14,7 @@ def tags_index():
     query = db.engine.execute(statement)
     return render_template("tags/list.html", tags = query)
 
-##Individual tag view listing recipes associated with it
+#Individual tag view listing recipes associated with it
 @app.route("/tags/<tag_id>/", methods=["GET"])
 def tag_info(tag_id):
     tag = Tag.query.get(tag_id)

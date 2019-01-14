@@ -2,7 +2,7 @@ from application import db
 from application.models import Base
 from sqlalchemy.sql import text
 
-##Junction table for Recipe and Tag
+#Junction table for Recipe and Tag
 tags = db.Table('tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
     db.Column('recipe_id', db.Integer, db.ForeignKey('recipe.id'), primary_key=True)

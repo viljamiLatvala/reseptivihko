@@ -9,18 +9,18 @@ from application.recipes.forms import RecipeForm, RecipeEditForm
 
 from sqlalchemy.sql import text
 
-##List of all recipes
+#List of all recipes
 @app.route("/recipes", methods=["GET"])
 def recipes_index():
     return render_template("recipes/list.html", recipes = Recipe.query.all())
 
-##Form for adding new recipes
+#Form for adding new recipes
 @app.route("/recipes/new/")
 @login_required
 def recipes_form():
     return render_template("recipes/new.html", form = RecipeForm())
 
-##Individual recipe view
+#Individual recipe view
 @app.route("/recipes/<recipe_id>/", methods=["GET"])
 def recipe_info(recipe_id):
     recipe = Recipe.query.get(recipe_id)
@@ -29,7 +29,7 @@ def recipe_info(recipe_id):
     ingredients = Ingredient.query.filter_by(recipe_id=recipe_id)
     return render_template("recipes/recipe.html", recipe = recipe, recipeCreator = recipeCreator, tags = tags, ingredients = ingredients)
 
-##Form for editing specific recipe
+#Form for editing specific recipe
 @app.route("/recipes/<recipe_id>/edit/", methods=["GET"])
 def recipe_editform(recipe_id):
     fetched_recipe = Recipe.query.get(recipe_id)
@@ -49,7 +49,7 @@ def recipe_editform(recipe_id):
 
     return render_template("recipes/edit.html", recipe = fetched_recipe, form = RecipeEditForm(), tags = joined_tags, ingredients = joined_ingredients)
 
-##Route for deleting a recipe
+#Route for deleting a recipe
 @app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
 def recipe_delete(recipe_id):
     recipe = Recipe.query.get(recipe_id)
@@ -59,7 +59,7 @@ def recipe_delete(recipe_id):
     db.session.commit()
     return redirect(url_for("recipes_index"))
 
-##Route for editing a recipe
+#Route for editing a recipe
 @app.route("/recipes/<recipe_id>/", methods=["POST"])
 def recipe_edit(recipe_id):
     
@@ -99,7 +99,7 @@ def recipe_edit(recipe_id):
 
     return redirect(url_for("recipes_index"))
 
-##Route for adding a new recipe
+#Route for adding a new recipe
 @app.route("/recipes/", methods=["POST"])
 def recipes_create():
 
@@ -141,6 +141,8 @@ def add_tags(tags, recipe):
         recipe.tags.remove(rmtag)
 
     for tag in tags:
+        if tag == "":
+            break
         #Format tags to obey following rules:
         #no leading or trailing whitespace
         #capitalized, otherwise lowercase
@@ -157,7 +159,7 @@ def edit_tags(new_tags, recipe):
     prev_tags = Recipe.find_recipe_tags(recipe)
 
 def add_ingredients(ingredients, recipe):
-    ##FIRST format recipe to have no ingredients
+    #FIRST format recipe to have no ingredients
     find_recipe_ingredients(recipe).delete()
 
     for line in ingredients:

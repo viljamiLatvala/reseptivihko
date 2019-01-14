@@ -2,14 +2,18 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, IntegerField, HiddenField, validators, ValidationError
 from application.recipes.models import Recipe
 
-##Validators for checking tag length or ingredient line length
+#Validators for checking tag length or ingredient line length
 # doesn't exeed set maximum lengths
 def tag_length(min=-1, max=-1):
     message = 'Each tag must be between %d and %d characters long.' % (min, max)
     def _tag_length(form, field):
         tags = field.data.split(',')
+        
+        map(str.strip, tags)
+        if len(tags) == 1 and tags[0] == "":
+            return _tag_length
+
         for tag in tags:
-            tag = tag.strip()
             if len(tag) < min or max != -1 and len(tag) > max:
                 raise ValidationError(message)
                 break
@@ -39,8 +43,8 @@ def unique_name(action):
                 raise ValidationError(message)
     return _unique_name
 
-##Form for creating a recipe
-###Should validator maxes be inherited from models.py?
+#Form for creating a recipe
+#Should validator maxes be inherited from models.py?
 class RecipeForm(FlaskForm):
     name = StringField("Name", [validators.Length(min=3, max=144), unique_name(action = 'new')])
     ingredients = TextAreaField("Ingredients", [ingredients_length(min = 3, max = 500)])
