@@ -10,7 +10,7 @@
 {% for recipe in recipes %}
     <tr>
       <td><a class="text-success" href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
-      <td>{{recipe[2]}}</td>
+      <td>{{ (recipe[2]/60)|round(2, 'floor')|int }} h {{recipe[2]-(((recipe[2]/60)|round(2, 'floor')|int)*60)}} min</td>
     </tr>
     {% endfor %}
 </table>

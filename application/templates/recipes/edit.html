@@ -40,7 +40,7 @@
                 <small id="error" class="form-text text-danger">{{ error }}</small>
               {% endfor %}
         </div>
-        <button type="submit" class="btn btn-success">Edit</button>
+        <button type="submit" class="btn btn-success">Save</button>
   </form>
   <form method="POST" action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}">
       <button type="submit" class="btn btn-danger">Delete</button>

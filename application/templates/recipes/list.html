@@ -9,7 +9,7 @@
     {% for recipe in recipes %}
     <tr>
       <td><a class="text-success" href="{{ url_for('recipe_info', recipe_id=recipe.id)}}">{{recipe.name}}</a></td>
-      <td>{{ recipe.preptime }} minutes</td>
+      <td>{{ (recipe.preptime/60)|round(2, 'floor')|int }} h {{recipe.preptime-(((recipe.preptime/60)|round(2, 'floor')|int)*60)}} min</td>
     </tr>
     {% endfor %}
   </table>

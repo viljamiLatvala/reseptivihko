@@ -10,7 +10,7 @@ from application.recipes.forms import RecipeForm, RecipeEditForm
 from sqlalchemy.sql import text
 
 #List of all recipes
-@app.route("/recipes", methods=["GET"])
+@app.route("/recipes/", methods=["GET"])
 def recipes_index():
     return render_template("recipes/list.html", recipes = Recipe.query.all())
 
