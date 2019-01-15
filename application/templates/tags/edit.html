@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+  
+{% block body %}
+<form method="POST" action="{{ url_for('tag_edit', tag_id=tag.id ) }}">
+    <div class="form-group">
+      <label for="name">{{ form.name.label }}</label>
+        {{ form.name(class='form-control', value=tag.name)}}
+          {% for error in form.name.errors %}
+            <small id="error" class="form-text text-danger">{{ error }}</small>
+          {% endfor %}
+    </div>
+    <div class="form-group">
+        <label for="description">{{ form.description.label }}</label>
+            {% set formValue = form.description.process_data(tag.description) %}
+            {{ form.description(class='form-control')}}
+            {% for error in form.description.errors %}
+            <small id="error" class="form-text text-danger">{{ error }}</small>
+          {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+
+<form method="POST" action="{{ url_for('tag_delete', tag_id=tag.id) }}">
+    <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+{% endblock %}

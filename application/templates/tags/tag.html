@@ -2,6 +2,12 @@
   
 {% block body %}
 <h1>{{ tag.name }}</h1>
+<p>{{ tag.description }}</p>
+    {% if current_user.get_id() %}
+    {% if (current_user.get_role() ==  "admin") %}
+    <a href="{{ url_for('tag_editform', tag_id=tag.id)}}">Edit</a>
+    {% endif %}
+  {% endif %}
 <table class="table">
   <tr>
     <th>Recipe</th>
@@ -11,6 +17,14 @@
     <tr>
       <td><a class="text-success" href="{{ url_for('recipe_info', recipe_id=recipe[0])}}">{{recipe[1]}}</a></td>
       <td>{{ (recipe[2]/60)|round(2, 'floor')|int }} h {{recipe[2]-(((recipe[2]/60)|round(2, 'floor')|int)*60)}} min</td>
+      {% if current_user.get_id() %}
+        {% if (current_user.get_role() ==  "admin") %}
+          <td><form method="POST" action="{{ url_for('detach_recipe', tag_id=tag.id, recipe_id=recipe[0]) }}">
+              <button type="submit" class="btn btn-danger">Detach from tag</button>
+          </form>
+        </td>
+        {% endif %}
+      {% endif %}
     </tr>
     {% endfor %}
 </table>

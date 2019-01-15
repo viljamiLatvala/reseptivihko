@@ -10,18 +10,53 @@ from application.recipes.forms import RecipeForm, RecipeEditForm
 
 from sqlalchemy.sql import text
 
-#List of all recipes
+#index
 @app.route("/recipes/", methods=["GET"])
 def recipes_index():
     return render_template("recipes/list.html", recipes = Recipe.query.all())
 
-#Form for adding new recipes
-@app.route("/recipes/new/")
+#CREATE
+#Form for creation
+@app.route("/recipes/new/", methods=["GET"])
 @login_required
 def recipes_form():
     return render_template("recipes/new.html", form=RecipeForm())
 
-#Individual recipe view
+#Actual creation
+@app.route("/recipes/", methods=["POST"])
+def recipes_create():
+
+    form = RecipeForm(request.form)
+    form.recipe_id = -1
+    #Checking that the form passes validations
+    if not form.validate():
+        return render_template("recipes/new.html", form=form)
+
+    #Adding the new recipe
+    name = form.name.data.strip()
+    name = (name[0].upper() + name[1:])
+    newRecipe = Recipe(name)
+    newRecipe.instruction = form.instruction.data
+    newRecipe.preptime = form.preptime.data
+    newRecipe.account_id = current_user.id
+
+    #Separating and adding tags
+    tagsString = form.tags.data.strip()
+    tags = tagsString.split(',')
+    Tag.add_tags(tags, newRecipe)
+
+    #Commiting changes
+    db.session().add(newRecipe)
+    db.session().commit()
+    
+    #Ingredients need recipe ID, so they are added only after the recipe is added
+    addedRecipe = Recipe.query.filter(Recipe.name == newRecipe.name).first()
+    ingredients = form.ingredients.data.splitlines()
+    Ingredient.add_ingredients(ingredients, addedRecipe)
+
+    return redirect(url_for("recipes_index"))
+
+#READ
 @app.route("/recipes/<recipe_id>/", methods=["GET"])
 def recipe_info(recipe_id):
     recipe = Recipe.query.get(recipe_id)
@@ -30,7 +65,8 @@ def recipe_info(recipe_id):
     ingredients = Ingredient.query.filter_by(recipe_id=recipe_id)
     return render_template("recipes/recipe.html", recipe=recipe, recipeCreator=recipeCreator, tags=tags, ingredients=ingredients)
 
-#Form for editing specific recipe
+#UPDATE
+#Form for updating
 @app.route("/recipes/<recipe_id>/edit/", methods=["GET"])
 def recipe_editform(recipe_id):
     fetched_recipe = Recipe.query.get(recipe_id)
@@ -50,18 +86,7 @@ def recipe_editform(recipe_id):
 
     return render_template("recipes/edit.html", recipe=fetched_recipe, form=RecipeEditForm(), tags=joined_tags, ingredients=joined_ingredients)
 
-#Route for deleting a recipe
-@app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
-def recipe_delete(recipe_id):
-    recipe = Recipe.query.get(recipe_id)
-    if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
-        return abort(401)
-    Ingredient.find_recipe_ingredients(recipe).delete()
-    db.session.delete(recipe)
-    db.session.commit()
-    return redirect(url_for("recipes_index"))
-
-#Route for editing a recipe
+#Actual updating
 @app.route("/recipes/<recipe_id>/", methods=["POST"])
 def recipe_edit(recipe_id):
     
@@ -92,7 +117,7 @@ def recipe_edit(recipe_id):
 
     #Add tags for the recipe
     tags = form.tags.data.split(',')
-    add_tags(tags, changedRecipe)
+    Tag.add_tags(tags, changedRecipe)
 
     db.session().commit()
 
@@ -101,58 +126,14 @@ def recipe_edit(recipe_id):
 
     return redirect(url_for("recipes_index"))
 
-#Route for adding a new recipe
-@app.route("/recipes/", methods=["POST"])
-def recipes_create():
-
-    form = RecipeForm(request.form)
-    form.recipe_id = -1
-#Checking that the form passes validations
-    if not form.validate():
-        return render_template("recipes/new.html", form=form)
-
-#Adding the new recipe
-    name = form.name.data.strip()
-    name = (name[0].upper() + name[1:])
-    newRecipe = Recipe(name)
-    newRecipe.instruction = form.instruction.data
-    newRecipe.preptime = form.preptime.data
-    newRecipe.account_id = current_user.id
-
-#Separating and adding tags
-    tagsString = form.tags.data.strip()
-    tags = tagsString.split(',')
-    add_tags(tags, newRecipe)
-
-#Commiting changes
-    db.session().add(newRecipe)
-    db.session().commit()
-    
-#Ingredients need recipe ID, so they are added only after the recipe is added
-    addedRecipe = Recipe.query.filter(Recipe.name == newRecipe.name).first()
-    ingredients = form.ingredients.data.splitlines()
-    Ingredient.add_ingredients(ingredients, addedRecipe)
-
+#DELETE
+@app.route("/recipes/<recipe_id>/delete/", methods=["POST"])
+def recipe_delete(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
+        return abort(401)
+    Ingredient.find_recipe_ingredients(recipe).delete()
+    db.session.delete(recipe)
+    db.session.commit()
     return redirect(url_for("recipes_index"))
 
-#Helper functions and queries
-def add_tags(tags, recipe):
-    prev_tags = Recipe.find_recipe_tags(recipe)
-    for tag in prev_tags:
-        rmtag = Tag.query.filter(Tag.id == tag[0]).first()
-        recipe.tags.remove(rmtag)
-
-    for tag in tags:
-        if tag == "":
-            break
-        #Format tags to obey following rules:
-        #no leading or trailing whitespace
-        #capitalized, otherwise lowercase
-        tag = tag.strip().lower().capitalize()
-
-        tagExists = Tag.query.filter(Tag.name == tag).first()
-        if tagExists:
-            recipe.tags.append(tagExists)
-        else:
-            newTag = Tag(tag)
-            recipe.tags.append(newTag)
