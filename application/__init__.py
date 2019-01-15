@@ -63,6 +63,8 @@ from application.recipes import views
 from application.tags import models
 from application.tags import views
 
+from application.ingredients import models
+
 from application.auth import models
 from application.auth import views
 

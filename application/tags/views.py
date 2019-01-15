@@ -1,7 +1,8 @@
 from flask import render_template
 from application import app, db
 
-from application.recipes.models import Recipe, Ingredient
+from application.recipes.models import Recipe
+from application.ingredients.models import Ingredient
 from application.tags.models import Tag
 from application.auth.models import User
 from application.recipes.forms import RecipeForm

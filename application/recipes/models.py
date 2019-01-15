@@ -35,10 +35,10 @@ class Recipe(Base):
         return response
 
 
-class Ingredient(Base):
-    line = db.Column(db.String(500), nullable=False)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
+# class Ingredient(Base):
+#     line = db.Column(db.String(500), nullable=False)
+#     recipe_id = db.Column(db.Integer, db.ForeignKey('recipe.id'), nullable=False)
 
-    def __init__(self, line, recipe_id):
-        self.line = line
-        self.recipe_id = recipe_id
+#     def __init__(self, line, recipe_id):
+#         self.line = line
+#         self.recipe_id = recipe_id

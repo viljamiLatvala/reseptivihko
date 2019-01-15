@@ -2,9 +2,10 @@ from flask import redirect,render_template, request, url_for, abort
 from flask_login import current_user, login_required
 from application import app, db
 
-from application.recipes.models import Recipe, Ingredient
+from application.recipes.models import Recipe
 from application.tags.models import Tag
 from application.auth.models import User
+from application.ingredients.models import Ingredient
 from application.recipes.forms import RecipeForm, RecipeEditForm
 
 from sqlalchemy.sql import text
@@ -42,7 +43,7 @@ def recipe_editform(recipe_id):
         if i < tags_length-1:
             joined_tags += ', '
 
-    fetched_ingredients = find_recipe_ingredients(fetched_recipe)
+    fetched_ingredients = Ingredient.find_recipe_ingredients(fetched_recipe)
     joined_ingredients = ""
     for ingredient in fetched_ingredients:
         joined_ingredients += ingredient.line + "\n"
@@ -55,7 +56,7 @@ def recipe_delete(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     if (recipe.account_id is not current_user.get_id()) and (current_user.get_role() != 'admin'):
         return abort(401)
-    find_recipe_ingredients(recipe).delete()
+    Ingredient.find_recipe_ingredients(recipe).delete()
     db.session.delete(recipe)
     db.session.commit()
     return redirect(url_for("recipes_index"))
@@ -96,7 +97,7 @@ def recipe_edit(recipe_id):
     db.session().commit()
 
     ingredients = request.form.get("ingredients").splitlines()
-    add_ingredients(ingredients, changedRecipe)
+    Ingredient.add_ingredients(ingredients, changedRecipe)
 
     return redirect(url_for("recipes_index"))
 
@@ -130,7 +131,7 @@ def recipes_create():
 #Ingredients need recipe ID, so they are added only after the recipe is added
     addedRecipe = Recipe.query.filter(Recipe.name == newRecipe.name).first()
     ingredients = form.ingredients.data.splitlines()
-    add_ingredients(ingredients, addedRecipe)
+    Ingredient.add_ingredients(ingredients, addedRecipe)
 
     return redirect(url_for("recipes_index"))
 
@@ -155,21 +156,3 @@ def add_tags(tags, recipe):
         else:
             newTag = Tag(tag)
             recipe.tags.append(newTag)
-
-def edit_tags(new_tags, recipe):
-    prev_tags = Recipe.find_recipe_tags(recipe)
-
-def add_ingredients(ingredients, recipe):
-    #FIRST format recipe to have no ingredients
-    find_recipe_ingredients(recipe).delete()
-
-    for line in ingredients:
-        line = line.strip()
-        line = line[0].upper() + line[1:]
-        ingredient = Ingredient(line, recipe.id)
-        db.session.add(ingredient)
-    db.session.commit()
-
-def find_recipe_ingredients(recipe):
-    ingredients = Ingredient.query.filter(Ingredient.recipe_id == recipe.id)
-    return ingredients
