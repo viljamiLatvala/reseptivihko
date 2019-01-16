@@ -1,4 +1,12 @@
 # Reseptivihko - RecipeApp
+## Table of Contents
+1. [Description](#description)
+2. [Instructions for use](#instructions-for-use)
+3. [Installing](#installing)
+4. [User stories](#user-stories)
+5. [Database diagram and schema](#database-diagram-and-schema)
+6. [Developement points and problems](#developement-points-and-problems)
+7. [My experiences](#my-experiences)
 ## Description
 This is a web application created as course work for the course Tietokantojen harjoitustyö (Database excercise project).
 
@@ -7,6 +15,16 @@ The basic idea of the application is for users to be able to add and browse reci
 Application users are able to register user accounts that they can log in with, add and edit their own recipes. Users with admin rights are able to edit any recipe or tag.
 
 Recipes contain information such as name, preparation time, ingredient description and instructions. Users are also able to mark their recipes with tags of their choosing, and browse recipes by tags.
+
+## Application on Heroku
+Application is running on Heroku at: https://reseptivihko.herokuapp.com
+
+For testing purposes, feel free to use following admin-credentials:
+
+__username:__  admin
+__password:__ password
+
+For basic user functionality, you can create your own user-account. Please note that at this time, passwords are stored in the application database as plain text.
 
 ## Instructions for use
 ### Front page and navigation
@@ -63,22 +81,99 @@ By clicking a tag name on the list, user is directed to a site containging a lis
 
 By default, users are not able to create tags in other ways than adding a previously unused tag to a recipe. However admins are capable of creating tags without any recipes. This functionality could be used for example to format the tag list with pre-meditated tag-names and descriptions to inspire and help users use tag functionality.
 
-## Documentation
-Various documentation about the project is located in the [documents-folder](../master/documentation) of the repository. Here are links to some key documentation:
+## Installing
+### Running locally
+1. Clone this git repository.
+2. When inside repository folder, install Venv to allow you to run the application in virtual environment.
+3. Activate Venv by calling `source /venv/bin/activate` when in repository root directory
+4. To make sure your pip is up to date, call `pip install -r requirements.txt`
+5. Install project dependencies by calling `pip install -r requirements.txt`
+6. To start the application in virtual environment, call `python3 run.py` . You should now get indication that the application is running. The default address and port are 127.0.0.1:5000
+7. Admin account needs to be manually inserted to the database, this can be done by opening recipes.db file in the application directory, and calling `INSERT INTO account(username, password, role) VALUES ("*your admin name*, *your admin pw*, "admin")
 
-* [Database diagram](../master/documentation/database_diagram.md)
+### Deploying to Heroku
+Following instructions assume that you have Heroku account and Heroku command line interface installed:
+1. Clone this git repository.
+2. Call `heroku create *your name for the app*` . Heroku CLI will create location for the application, and give you the url for that, as well as the .git version management address.
+3. connect heroku to git by calling `git remote add heroku *git address heroku provided* `
+4. Push application to herku by doing git add, git commit and then calling `git push heroku master` . Heroku should install dependencies and deploy the application.
+5. Add postgreSQL-database for the application by calling `heroku addons:add heroku-postgresql:hobby-dev`
+6. Now you can add admin account by connecting to the database calling `heroku pg:psql` and once the connection has been established, creating the account with command `INSERT INTO account(username, password, role) VALUES ("*your admin name*, *your admin pw*, "admin")`
 
-* [User stories](../master/documentation/user_stories.md)
+## User stories
 
-* [Running your own instance](../master/documentation/startup_guide.md)
-      
+|As a/an | I want to... | so that...| related SQL-query | 
+|--------|--------------|-----------|-------------------|
+| user | be able to add recipes with ingredient lists and instructions | other people can enjoy the recipes that I come up with | 
+| user | be able to edit my recipe instructions, |I can correct any mistakes |
+| user | be able to edit my recipe ingredients, |I can adjust the amounts after coming up with better ones | 
+| user | be able to anticipate how long it takes to make a dish by following a spesific recipe | I can manage my time better | 
+| user | search recipes by category | I can find recipes to suit my mood and taste | 
+| user | be able to delete a recipe | I don't have to share anything I dont want to online | 
+| admin | Be able to edit any recipe on the platform | I can remove any explicit language | 
+| admin | Be able to remove any recipe | I can weed out possible spam | 
+| admin | Manage which recipes belong to which tag | Make sure tags contain only recipes that belog to it | 
+| admin | add descriptive information for tags | I can describe what sorts of recipes a tag should contain | 
 
-## Application on Heroku
-Application is running on Heroku at: https://reseptivihko.herokuapp.com
+## Database diagram and schema
+### Diagram
+A database diagram drawn with [yuml.me](https://yuml.me). The diagram represents the relations of different database entities.
 
-For testing purposes, feel free to use following admin-credentials:
+![database diagram](https://github.com/viljamiLatvala/reseptivihko/blob/master/documentation/database_diagram.png?raw=true "database diagram")
 
-__username:__  admin
-__password:__ password
+### Schema
+```sql
+CREATE TABLE account (
+	id INTEGER NOT NULL, 
+	date_created DATETIME, 
+	date_modified DATETIME, 
+	username VARCHAR(64) NOT NULL, 
+	password VARCHAR(144) NOT NULL, 
+	role VARCHAR(64), 
+	PRIMARY KEY (id)
+);
+CREATE TABLE tag (
+	id INTEGER NOT NULL, 
+	name VARCHAR(144) NOT NULL, 
+	description VARCHAR(144), 
+	PRIMARY KEY (id)
+);
+CREATE TABLE recipe (
+	id INTEGER NOT NULL, 
+	date_created DATETIME, 
+	date_modified DATETIME, 
+	name VARCHAR(144) NOT NULL, 
+	instruction VARCHAR(6000), 
+	preptime INTEGER, 
+	account_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(account_id) REFERENCES account (id)
+);
+CREATE TABLE ingredient (
+	id INTEGER NOT NULL, 
+	date_created DATETIME, 
+	date_modified DATETIME, 
+	line VARCHAR(500) NOT NULL, 
+	recipe_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(recipe_id) REFERENCES recipe (id)
+);
+CREATE TABLE tags (
+	tag_id INTEGER NOT NULL, 
+	recipe_id INTEGER NOT NULL, 
+	PRIMARY KEY (tag_id, recipe_id), 
+	FOREIGN KEY(tag_id) REFERENCES tag (id), 
+	FOREIGN KEY(recipe_id) REFERENCES recipe (id)
+);
 
-For basic user functionality, you can create your own user-account. Please note that at this time, passwords are stored in the application database as plain text.
+```
+## Developement points and problems
+* Making CRUD-functionality for users
+* Hashing passwords, passwords are now stored in plaintext.
+* User roles done with a separate table instead of as column of account table
+* Setting different userroles in some other way than directly setting them directly to the database
+* Better authorization for defining usergroups
+* Editing recipes tags and instrucions are currently done by first removing all recipes and tags of a recipe, and then adding everything in the editform in. More sophisticated way could be done.
+* Some database interaction is still done outside models directories.
+
+## My experiences
