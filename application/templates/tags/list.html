@@ -1,16 +1,15 @@
 {% extends "layout.html" %}
-
 {% block body %}
-  <table class="table">
-    <tr>
-      <th>Tag</th>
-      <th>Occurences</th>
-    </tr>
-    {% for tag in tags %}
-    <tr>
-      <td><a class="text-success" href="{{ url_for('tag_info', tag_id=tag.id)}}">{{tag.name}}</a></td>
-      <td>{{tag.count}}</td>
-    </tr>
-    {% endfor %}
-  </table>
+<table class="table">
+  <tr>
+    <th>Tag</th>
+    <th>Occurences</th>
+  </tr>
+  {% for tag in tags %}
+  <tr>
+    <td><a class="text-success" href="{{ url_for('tag_info', tag_id=tag.id)}}">{{tag.name}}</a></td>
+    <td>{{tag.count}}</td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock %}

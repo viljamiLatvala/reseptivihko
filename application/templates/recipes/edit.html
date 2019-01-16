@@ -1,51 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
-  <form method="POST" action="{{ url_for('recipe_edit', recipe_id=recipe.id) }}">
-      {{form.recipeId(value=recipe.id)}}
-      <div class="form-group">
-          <label for="name">{{ form.name.label }}</label>
-          {{form.name(class="form-control", value=recipe.name)}}
-              {% for error in form.name.errors %}
-                <small id="error" class="form-text text-danger">{{ error }}</small>
-              {% endfor %}
-        </div>
-        <div class="form-group">
-            <label for="ingredients">{{form.ingredients.label}}</label>
-            {% set formValue = form.ingredients.process_data(ingredients) %}
-            {{form.ingredients(class="form-control")}}
-              {% for error in form.ingredients.errors %}
-                <small id="error" class="form-text text-danger">{{ error }}</small>
-              {% endfor %}
-        </div>
-        <div class="form-group">
-            <label for="preptime">{{ form.preptime.label }}</label>
-              {{ form.preptime(class="form-control", value=recipe.preptime) }}
-              {% for error in form.preptime.errors %}
-                <small id="error" class="form-text text-danger">{{ error }}</small>
-              {% endfor %}
-        </div>
-        <div class="form-group">
-            <label for="instruction">{{form.instruction.label}}</label>
-              {% set formValue = form.instruction.process_data(recipe.instruction) %}
-                {{form.instruction(class="form-control")}}
-              {% for error in form.instruction.errors %}
-                <small id="error" class="form-text text-danger">{{ error }}</small>
-              {% endfor %}
-        </div>
-        <div class="form-group">
-            <label for="tags">{{form.tags.label}}</label>
-            {% set formValue = form.tags.process_data(tags) %}
-            {{form.tags(class="form-control")}}
-              {% for error in form.tags.errors %}
-                <small id="error" class="form-text text-danger">{{ error }}</small>
-              {% endfor %}
-        </div>
-        <button type="submit" class="btn btn-success">Save</button>
-  </form>
-  <form method="POST" action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}">
-      <button type="submit" class="btn btn-danger">Delete</button>
-  </form>
+<form method="POST" action="{{ url_for('recipe_edit', recipe_id=recipe.id) }}">
+  {{form.recipeId(value=recipe.id)}}
+  <div class="form-group">
+    <label for="name">{{ form.name.label }}</label>
+    {{form.name(class="form-control", value=recipe.name)}}
+    {% for error in form.name.errors %}
+    <small id="error" class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="ingredients">{{form.ingredients.label}}</label>
+    {% set formValue = form.ingredients.process_data(ingredients) %}
+    {{form.ingredients(class="form-control")}}
+    {% for error in form.ingredients.errors %}
+    <small id="error" class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="preptime">{{ form.preptime.label }}</label>
+    {{ form.preptime(class="form-control", value=recipe.preptime) }}
+    {% for error in form.preptime.errors %}
+    <small id="error" class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="instruction">{{form.instruction.label}}</label>
+    {% set formValue = form.instruction.process_data(recipe.instruction) %}
+    {{form.instruction(class="form-control")}}
+    {% for error in form.instruction.errors %}
+    <small id="error" class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  <div class="form-group">
+    <label for="tags">{{form.tags.label}}</label>
+    {% set formValue = form.tags.process_data(tags) %}
+    {{form.tags(class="form-control")}}
+    {% for error in form.tags.errors %}
+    <small id="error" class="form-text text-danger">{{ error }}</small>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+<form method="POST" action="{{ url_for('recipe_delete', recipe_id=recipe.id) }}">
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
 {% endblock %}
-
-
 </form>

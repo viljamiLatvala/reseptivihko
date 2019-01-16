@@ -13,7 +13,7 @@ from sqlalchemy.sql import text
 #index
 @app.route("/recipes/", methods=["GET"])
 def recipes_index():
-    return render_template("recipes/list.html", recipes = Recipe.query.all())
+    return render_template("recipes/list.html", recipes=Recipe.query.all())
 
 #CREATE
 #Form for creation

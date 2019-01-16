@@ -34,6 +34,19 @@ class Recipe(Base):
 
         return response
 
+    @staticmethod
+    def summary():
+        statement = text("SELECT COUNT(recipe.id)," 
+                        " AVG(recipe.preptime)," 
+                        " COUNT(DISTINCT account_id)"
+                        " FROM recipe")
+        query = db.engine.execute(statement)
+        result = []
+        for row in query:
+            result = row
+
+        return result
+
 
 # class Ingredient(Base):
 #     line = db.Column(db.String(500), nullable=False)

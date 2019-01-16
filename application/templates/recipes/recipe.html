@@ -1,27 +1,25 @@
 {% extends "layout.html" %}
-  
 {% block body %}
 <h1>{{ recipe.name }}</h1>
 <ul class= "list-unstyled">
-<li>Added by: {{ recipeCreator.username }}</li>
-<li>Preparation time: {{ (recipe.preptime/60)|round(2, 'floor')|int }} h {{recipe.preptime-(((recipe.preptime/60)|round(2, 'floor')|int)*60)}} min</li>
-{% if current_user.get_id() %}
+  <li>Added by: {{ recipeCreator.username }}</li>
+  <li>Preparation time: {{ (recipe.preptime/60)|round(2, 'floor')|int }} h {{recipe.preptime-(((recipe.preptime/60)|round(2, 'floor')|int)*60)}} min</li>
+  {% if current_user.get_id() %}
   {% if (current_user.get_id() == recipe.account_id) or (current_user.get_role() ==  "admin") %}
   <li><a href="{{ url_for('recipe_editform', recipe_id=recipe.id)}}">Edit recipe</a></li>
   {% endif %}
-{% endif %}
+  {% endif %}
 </ul>
 <h2>Ingredients needed for this recipe:</h2>
 <ul class="list-group list-group-flush">
-    {% for ingredient in ingredients %}
-    <li class="list-group-item">{{ ingredient.line }}</li>
-    {% endfor %}
+  {% for ingredient in ingredients %}
+  <li class="list-group-item">{{ ingredient.line }}</li>
+  {% endfor %}
 </ul>
 <h2>Instructions:</h2>
 <p>{{ recipe.instruction }}</p>
-
 <h2>Tags:</h2>
-  {% for tag in tags %}
-      <a href="{{ url_for('tag_info', tag_id=tag[0])}}" class="btn btn-warning">{{tag[1]}}</a>
-  {% endfor %}
+{% for tag in tags %}
+<a href="{{ url_for('tag_info', tag_id=tag[0])}}" class="btn btn-warning">{{tag[1]}}</a>
+{% endfor %}
 {% endblock %}
