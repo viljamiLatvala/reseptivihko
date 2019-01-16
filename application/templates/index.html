@@ -2,5 +2,5 @@
 {% block body %}
 <h1>Welcome to RecipeApp!</h1>
 <p>This application can be used to store recipes for your favourite meals. Use the site navigation to access different features of the site</p>
-<p>This site hosts total of {{recipe_summary[0]}} recipes posted by {{recipe_summary[2]}} different users, with an average preparation time of {{recipe_summary[1]}} </p>
+<p>This site hosts total of {{recipe_summary[0]}} recipes posted by {{recipe_summary[2]}} different users, with an average preparation time of {{recipe_summary[1]|round(1)}} </p>
 {% endblock %}

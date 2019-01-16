@@ -12,4 +12,9 @@
   </tr>
   {% endfor %}
 </table>
+{% if current_user.get_id() %}
+{% if (current_user.get_role() ==  "admin") %}
+<a href="{{ url_for('tag_createform')}}">Create a tag</a>
+{% endif %}
+{% endif %}
 {% endblock %}

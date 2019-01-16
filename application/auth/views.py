@@ -7,6 +7,7 @@ from application.auth.forms import LoginForm, SignupForm
 
 from sqlalchemy import func
 
+
 @app.route("/auth/login", methods=["GET", "POST"])
 def auth_login():
     if request.method == "GET":
@@ -14,17 +15,20 @@ def auth_login():
 
     form = LoginForm(request.form)
 
-    user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+    user = User.query.filter_by(username=form.username.data,
+                                password=form.password.data).first()
     if not user:
         return render_template("auth/loginform.html", form=form,
                                error="No such username or password")
     login_user(user)
     return redirect(url_for("index"))
 
+
 @app.route("/auth/logout")
 def auth_logout():
     logout_user()
     return redirect(url_for("index"))
+
 
 @app.route("/auth/signup", methods=["GET", "POST"])
 def auth_signup():
@@ -35,15 +39,17 @@ def auth_signup():
 
     if not form.validate():
         return render_template("auth/signupform.html", form=form)
-    
-    nameTaken = User.query.filter(func.lower(User.username) == func.lower(form.username.data)).first()
+
+    nameTaken = User.query.filter(func.lower(User.username) ==
+                                  func.lower(form.username.data)).first()
     if nameTaken:
         form.username.errors.append('usename taken!')
         return render_template("auth/signupform.html", form=form)
 
-    newUser = User(form.username.data,form.password.data)
+    newUser = User(form.username.data, form.password.data)
     db.session().add(newUser)
     db.session().commit()
-    createdUser = User.query.filter_by(username=form.username.data, password=form.password.data).first()
+    createdUser = User.query.filter_by(username=form.username.data,
+                                       password=form.password.data).first()
     login_user(createdUser)
     return redirect(url_for("index"))

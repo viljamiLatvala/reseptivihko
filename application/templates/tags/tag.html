@@ -4,7 +4,7 @@
 <p>{{ tag.description }}</p>
 {% if current_user.get_id() %}
 {% if (current_user.get_role() ==  "admin") %}
-<a href="{{ url_for('tag_editform', tag_id=tag.id)}}">Edit</a>
+<a href="{{ url_for('tag_editform', tag_id=tag.id)}}">Edit tag</a>
 {% endif %}
 {% endif %}
 <table class="table">
