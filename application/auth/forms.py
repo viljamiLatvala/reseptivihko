@@ -41,7 +41,7 @@ class LoginForm(FlaskForm):
 
 
 class SignupForm(FlaskForm):
-    username = StringField("Username", [validators.Length(min=3, max=64)])
+    username = StringField("Username", [validators.Length(min=3, max=16)])
     password = PasswordField("Password", [validate_password(min=8, max=144)])
     password_control = PasswordField("Re-type password",
                                      [validate_password_control])

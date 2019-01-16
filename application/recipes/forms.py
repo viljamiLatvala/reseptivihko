@@ -56,11 +56,11 @@ def unique_name(action):
 # Should validator maxes be inherited from models.py?
 class RecipeForm(FlaskForm):
     name = StringField("Name",
-                       [validators.Length(min=3, max=144),
+                       [validators.Length(min=3, max=64),
                         unique_name(action='new')]
                        )
     ingredients = TextAreaField("Ingredients",
-                                [validate_ingredients_length(min=3, max=500)]
+                                [validate_ingredients_length(min=3, max=140)]
                                 )
     preptime = IntegerField("Preparation time (minutes)",
                             [validators.required()]
