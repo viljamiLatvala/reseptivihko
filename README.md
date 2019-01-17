@@ -100,18 +100,29 @@ By default, users are not able to create tags in other ways than adding a previo
 7. Admin account needs to be manually inserted to the database
 ...First open the application on a browser, and create an account to the site
 ...Then you can elevate user role from the database
-...`cd application`
-...`sqlite3 recipes.db`
-...`UPDATE account SET role='admin' WHERE username='*your username*'`
+...`sqlite3 application/recipes.db`
+...`UPDATE account SET role='admin' WHERE username='*your username*';`
 
 ### Deploying to Heroku
 Following instructions assume that you have Heroku account and Heroku command line interface installed:
-1. Clone this git repository.
-2. Call `heroku create *your name for the app*` . Heroku CLI will create location for the application, and give you the url for that, as well as the .git version management address.
-3. connect heroku to git by calling `git remote add heroku *git address heroku provided* `
-4. Push application to herku by doing git add, git commit and then calling `git push heroku master` . Heroku should install dependencies and deploy the application.
-5. Add postgreSQL-database for the application by calling `heroku addons:add heroku-postgresql:hobby-dev`
-6. Now you can add admin account by connecting to the database calling `heroku pg:psql` and once the connection has been established, creating the account with command `INSERT INTO account(username, password, role) VALUES ("*your admin name*, *your admin pw*, "admin")`
+1. Clone this git repository, and access its root directory.
+...`git clone https://github.com/viljamiLatvala/reseptivihko.git`
+...`cd reseptivihko`
+2. Create location and version management address for your application.
+...`heroku create *your name for the app*` 
+...Heroku CLI will create location for the application, and give you the URLs for that, and the .git address.
+4. Push application to Heroku
+...`git push heroku master` 
+...Heroku should install dependencies and deploy the application.
+5. Add environmental variable to signal that the application is on Heroku
+...`heroku config:set HEROKU=1`
+6. Add postgreSQL-database for the application
+...`heroku addons:add heroku-postgresql:hobby-dev`
+6. Now you can add an admin account
+...First open the application on a browser, and create an account to the site
+...Then you can elevate user role from the database
+...`heroku pg:psql`
+...`UPDATE account SET role='admin' WHERE username='*your username*';`
 
 ## User stories
 

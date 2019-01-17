@@ -16,7 +16,8 @@ class Tag(db.Model):
     def tags_summary():
         statement = text("SELECT tag.id, tag.name, COUNT(tag_id) AS count"
                          " FROM tag LEFT JOIN tags ON tags.tag_id = tag.id"
-                         " GROUP BY tag.name ORDER BY COUNT(tag_id) DESC")
+                         " GROUP BY tag.id, tag.name"
+                         " ORDER BY COUNT(tag_id) DESC")
         query = db.engine.execute(statement)
         return query
 
