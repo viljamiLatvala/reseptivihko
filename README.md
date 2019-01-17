@@ -16,7 +16,7 @@ Application users are able to register user accounts that they can log in with, 
 
 Recipes contain information such as name, preparation time, ingredient description and instructions. Users are also able to mark their recipes with tags of their choosing, and browse recipes by tags.
 
-## Application on Heroku
+### Application on Heroku
 Application is running on Heroku at: https://reseptivihko.herokuapp.com
 
 For testing purposes, feel free to use following admin-credentials:
@@ -83,13 +83,26 @@ By default, users are not able to create tags in other ways than adding a previo
 
 ## Installing
 ### Running locally
-1. Clone this git repository.
-2. When inside repository folder, install Venv to allow you to run the application in virtual environment.
-3. Activate Venv by calling `source /venv/bin/activate` when in repository root directory
-4. To make sure your pip is up to date, call `pip install -r requirements.txt`
-5. Install project dependencies by calling `pip install -r requirements.txt`
-6. To start the application in virtual environment, call `python3 run.py` . You should now get indication that the application is running. The default address and port are 127.0.0.1:5000
-7. Admin account needs to be manually inserted to the database, this can be done by opening recipes.db file in the application directory, and calling `INSERT INTO account(username, password, role) VALUES ("*your admin name*, *your admin pw*, "admin")
+1. Clone this git repository, and access its root directory.
+...`git clone https://github.com/viljamiLatvala/reseptivihko.git`
+...`cd reseptivihko`
+2. When inside repository folder, create an virtual environment to allow you to run the application in locally.
+...`python3 -m venv venv`
+3. Activate Venv 
+...`source venv/bin/activate`
+4. Make sure your pip is up to date 
+...`pip install --upgrade pip`
+5. Install project dependencies
+...`pip install -r requirements.txt`
+6. Start the application in virtual environment
+...`python3 run.py` 
+...You should now get indication that the application is running. The default address and port are 127.0.0.1:5000
+7. Admin account needs to be manually inserted to the database
+...First open the application on a browser, and create an account to the site
+...Then you can elevate user role from the database
+...`cd application`
+...`sqlite3 recipes.db`
+...`UPDATE account SET role='admin' WHERE username='*your username*'`
 
 ### Deploying to Heroku
 Following instructions assume that you have Heroku account and Heroku command line interface installed:
@@ -177,3 +190,8 @@ CREATE TABLE tags (
 * Some database interaction is still done outside models directories.
 
 ## My experiences
+This project uses SQLAlchemy, and while I had previosly stumbled upon the consept of ORMs, it was a fist time using one for me. Using SQLAlchemy was fairly straight forward and intuitive, and it certainly made alot of stuff easier. Things I found a bit harder to grasp at first was creating different kinds of relations between database models and separating database objects and their usage into their own directories and files to form an undestandable filestructure for the project. However towards the end of the course I managed restructure my database models and code into a more clean and suitable form.
+
+This course was also my first time using Python for any web-development. My experiences were, that Flask is a very flexible framework and it was very easy to get started with it. I feel like having to use multiple different extensions to achieve some functionality such as ORM, validation and authentication led to a better understanding of the sturcture, inner workings and expandability of Flask projects.
+
+I found the peer-to-peer reviews done in this course very valuable, both to read and write. Detailed and well structured criticism, experiences and opinions from others was good material for steering the project into a right direction. I especially liked that the reviewing forced me to pay attention to the readability and style of the code I wrote, something I easily overlook in code I know is for "my eyes only". I also liked the course schedule, since it provided some good weekly waypoints and thus helped to keep the project on track.

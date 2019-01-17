@@ -50,7 +50,7 @@ class Recipe(Base):
     @staticmethod
     def summary():
         statement = text("SELECT COUNT(recipe.id),"
-                         " AVG(recipe.preptime),"
+                         " COALESCE (AVG(recipe.preptime),0),"
                          " COUNT(DISTINCT account_id)"
                          " FROM recipe")
         query = db.engine.execute(statement)
