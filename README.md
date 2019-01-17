@@ -84,60 +84,65 @@ By default, users are not able to create tags in other ways than adding a previo
 ## Installing
 ### Running locally
 1. Clone this git repository, and access its root directory.
-...`git clone https://github.com/viljamiLatvala/reseptivihko.git`
-...`cd reseptivihko`
+   `git clone https://github.com/viljamiLatvala/reseptivihko.git`  
+   `cd reseptivihko`  
 2. When inside repository folder, create an virtual environment to allow you to run the application in locally.
-...`python3 -m venv venv`
+   `python3 -m venv venv`  
 3. Activate Venv 
-...`source venv/bin/activate`
+   `source venv/bin/activate`  
 4. Make sure your pip is up to date 
-...`pip install --upgrade pip`
+   `pip install --upgrade pip`  
 5. Install project dependencies
-...`pip install -r requirements.txt`
+   `pip install -r requirements.txt`  
 6. Start the application in virtual environment
-...`python3 run.py` 
-...You should now get indication that the application is running. The default address and port are 127.0.0.1:5000
+   `python3 run.py`  
+   You should now get indication that the application is running. The default address and port are 127.0.0.1:5000
 7. Admin account needs to be manually inserted to the database
-...First open the application on a browser, and create an account to the site
-...Then you can elevate user role from the database
-...`sqlite3 application/recipes.db`
-...`UPDATE account SET role='admin' WHERE username='*your username*';`
+   First open the application on a browser, and create an account to the site
+   Then you can elevate user role from the database
+   `sqlite3 application/recipes.db`  
+   `UPDATE account SET role='admin' WHERE username='*your username*';`  
 
 ### Deploying to Heroku
 Following instructions assume that you have Heroku account and Heroku command line interface installed:
 1. Clone this git repository, and access its root directory.
-...`git clone https://github.com/viljamiLatvala/reseptivihko.git`
-...`cd reseptivihko`
+   `git clone https://github.com/viljamiLatvala/reseptivihko.git`  
+   `cd reseptivihko`  
 2. Create location and version management address for your application.
-...`heroku create *your name for the app*` 
-...Heroku CLI will create location for the application, and give you the URLs for that, and the .git address.
+   `heroku create *your name for the app*`  
+   Heroku CLI will create location for the application, and give you the URLs for that, and the .git address.
 4. Push application to Heroku
-...`git push heroku master` 
-...Heroku should install dependencies and deploy the application.
+   `git push heroku master`  
+   Heroku should install dependencies and deploy the application.
 5. Add environmental variable to signal that the application is on Heroku
-...`heroku config:set HEROKU=1`
+   `heroku config:set HEROKU=1`  
 6. Add postgreSQL-database for the application
-...`heroku addons:add heroku-postgresql:hobby-dev`
+   `heroku addons:add heroku-postgresql:hobby-dev`  
 6. Now you can add an admin account
-...First open the application on a browser, and create an account to the site
-...Then you can elevate user role from the database
-...`heroku pg:psql`
-...`UPDATE account SET role='admin' WHERE username='*your username*';`
+
+   First open the application on a browser, and create an account to the site..
+   Then you can elevate user role from the database
+   `heroku pg:psql`  
+   `UPDATE account SET role='admin' WHERE username='*your username*';`  
 
 ## User stories
 
-|As a/an | I want to... | so that...| related SQL-query | 
+|As a/an | I want to    | so that   | related SQL-query | 
 |--------|--------------|-----------|-------------------|
-| user | be able to add recipes with ingredient lists and instructions | other people can enjoy the recipes that I come up with | 
-| user | be able to edit my recipe instructions, |I can correct any mistakes |
-| user | be able to edit my recipe ingredients, |I can adjust the amounts after coming up with better ones | 
-| user | be able to anticipate how long it takes to make a dish by following a spesific recipe | I can manage my time better | 
-| user | search recipes by category | I can find recipes to suit my mood and taste | 
-| user | be able to delete a recipe | I don't have to share anything I dont want to online | 
-| admin | Be able to edit any recipe on the platform | I can remove any explicit language | 
-| admin | Be able to remove any recipe | I can weed out possible spam | 
-| admin | Manage which recipes belong to which tag | Make sure tags contain only recipes that belog to it | 
-| admin | add descriptive information for tags | I can describe what sorts of recipes a tag should contain | 
+| user | be able to create an account | I can add recipes | `INSERT INTO account(username, password, role) VALUES(*name*,*pw*,'user')`
+| user | be able to add recipes | other people can enjoy the recipes that I come up with |
+`INSERT INTO recipe(name, preptime, instruction, account_id) VALUES ('*name*',*time*,'*instruction*,*id*)`
+| user | be able to edit my recipe instructions, |I can correct any mistakes | `UPDATE recipe SET *column name* = *value* WHERE id=*id*`
+| user | be able to edit my recipe ingredients, |I can adjust the amounts after coming up with better ones | `UPDATE ingredient SET line = '*line*' WHERE id = *id*`
+| user | be able to anticipate how long it takes to make a dish by following a spesific recipe | I can manage my time better | `SELECT name,preptime FROM recipe` 
+| user | search recipes by category | I can find recipes to suit my mood and taste | `SELECT * FROM recipe, tags, tag WHERE tags.recipe_id=recipe.id AND tags.tag_id = tag.id AND tag.name ='*Category*';`
+| user | be able to delete a recipe | I don't have to share anything I dont want to online | `DELETE FROM recipe WHERE id = *id*`
+| user | be able to see the most user tags | I can see whats popular | `SELECT tag.id, tag.name, COUNT(tag_id) AS count FROM tag LEFT JOIN tags ON tags.tag_id = tag.id GROUP BY tag.id, tag.name ORDER BY COUNT(tag_id) DESC`
+| user | see statistics about added recipes | I can see how much information this site has | `SELECT COUNT(recipe.id), COALESCE (AVG(recipe.preptime),0), COUNT(DISTINCT account_id) FROM recipe`
+| admin | Be able to edit any recipe on the platform | I can remove any explicit language | `UPDATE recipe SET instruction = *instruction* WHERE id = *id*` 
+| admin | Be able to remove any recipe | I can weed out possible spam | `DELETE FROM recipe WHERE id = *id*`
+| admin | Manage which recipes belong to which tag | Make sure tags contain only recipes that belog to it | `DELETE FROM tags WHERE tags.recipe_id = *id*`
+| admin | add descriptive information for tags | I can describe what sorts of recipes a tag should contain | `UPDATE tag SET description='*Description* WHERE tag.id = *id*'`
 
 ## Database diagram and schema
 ### Diagram
